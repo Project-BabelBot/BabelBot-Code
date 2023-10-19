@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Listening State</title>
+
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <style>
+        #modelviewer {
+            height: 1000px;
+            width: 600px;
+            /* border: 5px solid #000000; */
+            z-index: 1;
+        }
+        #listeningEar {
+            height: 300px;
+            width: 300px;
+            object-position: 20px;
+            object-fit: cover;
+            border-radius: 150px;
+            position: absolute;
+            left: 150px;
+            top: 300px;
+            background-color: #13cf13;
+            z-index: 4;
+        }
+        .listen {
+            height: 500px;
+            width: 600px;
+            position: relative; /*comment*/
+        }
+        .white-box {
+            background-color: white;
+            height: 500px;
+            width: 600px;
+            bottom: 470px;
+            position: relative;
+            z-index: 2;
+        }
+        #arcs {
+            position: absolute;
+            z-index: 3;
+            left: 0px;
+            top: 150px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="listen">
+        <model-viewer 
+            id="modelviewer" 
+            alt="Ready Player Me Avatar"
+            src="https://models.readyplayer.me/6529c84847d203826af5808d.glb" 
+            shadow-intensity="1" 
+            >                
+        </model-viewer>
+        <a href="Avatar-text.html">
+            <img 
+                id="listeningEar" 
+                src="listening-ear.png" 
+                alt="Ear Listening to Speech"
+            >
+        </a>    
+        <div class="white-box"></div>   
+        <canvas 
+            id="arcs" 
+            width="600" 
+            height="600">
+        </canvas>    
+    </div>
+    <script>
+        const canvas = document.getElementById("arcs");
+        const ctx = canvas.getContext("2d");
+
+        var centerX = 300;
+        var centerY = 300;
+        var radius = 200;
+
+        var startAngle = 7 * Math.PI / 6;
+        var endAngle = 5 * Math.PI / 6;
+
+        var clockwise = true;
+
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, startAngle, endAngle, clockwise);
+        ctx.lineWidth = 5;
+        ctx.strokeStyle = "#13cf13";
+        ctx.stroke(); 
+        ctx.closePath();
+
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, 11 * Math.PI / 6, Math.PI / 6, false);
+        ctx.stroke(); 
+        ctx.closePath();
+
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, 250, startAngle, endAngle, clockwise);
+        ctx.stroke(); 
+        ctx.closePath();
+        
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, 250, 11 * Math.PI / 6, Math.PI / 6, false);
+        ctx.stroke(); 
+        ctx.closePath();
+    </script>
+</body>
+
+</html>
