@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Text Box State</title>
+
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <style>
+        #modelviewer {
+            height: 1000px;
+            width: 600px;
+            /* border: 5px solid #000000; */
+            z-index: 1;
+        }
+        #listeningEar {
+            height: 100px;
+            width: 100px;
+            object-position: 20px;
+            object-fit: cover;
+            border-radius: 150px;
+            position: absolute;
+            left: 250px;
+            top: 500px;
+            background-color: #13cf13;
+            z-index: 4;
+        }
+        #replayText {
+            height: 100px;
+            width: 100px;
+            object-position: 5px;
+            object-fit: cover;
+            border-radius: 150px;
+            position: absolute;
+            left: 350px;
+            top: 500px;
+            background-color: #2c8888;
+            z-index: 4;
+        }
+        #checkMark {
+            height: 100px;
+            width: 100px;
+            /* object-position: 5px; */
+            object-fit: cover;
+            border-radius: 150px;
+            position: absolute;
+            left: 450px;
+            top: 500px;
+            background-color: #cf1313;
+            z-index: 4;
+        }
+        #avatarResponse {
+            text-align: left;
+            border-width: 3px;
+            border-style: solid;
+            border-color: black;
+            z-index: 5;
+            position: absolute;
+            top: 350px;
+            left: 90px;
+            background-color: white;
+            font-size: 30px;
+        }
+        #userSpeech {
+            text-align: left;
+            border-width: 3px;
+            border-style: solid;
+            border-color: black;
+            z-index: 5;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: white;
+            font-size: 30px;
+        }
+        .listen {
+            height: 500px;
+            width: 600px;
+            position: relative; /*comment*/
+            /* overflow: auto; */
+        }
+        .white-box {
+            background-color: white;
+            height: 500px;
+            width: 600px;
+            bottom: 470px;
+            position: relative;
+            z-index: 2;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="listen">
+        <model-viewer 
+            id="modelviewer" 
+            alt="Ready Player Me Avatar"
+            src="https://models.readyplayer.me/6529c84847d203826af5808d.glb" 
+            shadow-intensity="1" 
+            >                
+        </model-viewer>
+        <a href="avatar.html">
+            <img 
+                id="listeningEar" 
+                src="listening-ear.png" 
+                alt="Ear Listening to Speech"
+            >
+        </a> 
+        <a href="index.html">
+            <img 
+                id="checkMark" 
+                src="Check mark icon.png" 
+                alt="Check Mark"
+            >
+        </a>
+        <a href="Avatar-text.html">
+            <img 
+                id="replayText" 
+                src="Replay message icon.png" 
+                alt="Replay Icon"
+            >
+        </a>   
+        <div class="white-box"></div> 
+        <p id="avatarResponse">
+            Hola, mi amo Miguel. Como estas?
+        </p>    
+        <p id="userSpeech">
+            Hello, my name is Connor
+        </p>   
+    </div>
+</body>
+
+</html>
