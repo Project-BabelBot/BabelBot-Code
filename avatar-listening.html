@@ -41,6 +41,12 @@
             position: relative;
             z-index: 2;
         }
+        #arcs {
+            position: absolute;
+            z-index: 3;
+            left: 0px;
+            top: 150px;
+        }
     </style>
 </head>
 
@@ -53,7 +59,7 @@
             shadow-intensity="1" 
             >                
         </model-viewer>
-        <a href="avatar-listening.html">
+        <a href="Avatar-text.html">
             <img 
                 id="listeningEar" 
                 src="listening-ear.png" 
@@ -67,6 +73,41 @@
             height="600">
         </canvas>    
     </div>
+    <script>
+        const canvas = document.getElementById("arcs");
+        const ctx = canvas.getContext("2d");
+
+        var centerX = 300;
+        var centerY = 300;
+        var radius = 200;
+
+        var startAngle = 7 * Math.PI / 6;
+        var endAngle = 5 * Math.PI / 6;
+
+        var clockwise = true;
+
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, startAngle, endAngle, clockwise);
+        ctx.lineWidth = 5;
+        ctx.strokeStyle = "#13cf13";
+        ctx.stroke(); 
+        ctx.closePath();
+
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, 11 * Math.PI / 6, Math.PI / 6, false);
+        ctx.stroke(); 
+        ctx.closePath();
+
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, 250, startAngle, endAngle, clockwise);
+        ctx.stroke(); 
+        ctx.closePath();
+        
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, 250, 11 * Math.PI / 6, Math.PI / 6, false);
+        ctx.stroke(); 
+        ctx.closePath();
+    </script>
 </body>
 
 </html>
