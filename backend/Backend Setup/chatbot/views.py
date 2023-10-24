@@ -15,6 +15,7 @@ from langdetect import detect_langs
 from collections import defaultdict, Counter
 
 import nltk
+nltk.download('all')
 from nltk.stem import WordNetLemmatizer
 import tensorflow as tf
 from tensorflow.keras.models import load_model, Sequential
