@@ -148,7 +148,8 @@ def bag_of_words(sentence):
 
 def predict_class(sentence):
     classes = load_classes_pkl()
-    model = load_model(r'C:\Users\Nitya\Desktop\ENGG\Capstone\GitHub\Nitya-s-Code\English - Copy\chatbot\chatbotmodel.h5')
+    file_path = os.path.join(os.path.dirname(__file__), 'chatbotmodel.h5')
+    model = load_model(file_path)
 
     bow = bag_of_words(sentence)                                                
     res = model.predict(np.array([bow]))[0]                                     
