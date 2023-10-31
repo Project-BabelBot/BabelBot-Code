@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "chatbot", # include folder to the project
+    "src", # include folder to the project
 ]
 
 MIDDLEWARE = [
