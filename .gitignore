@@ -1,4 +1,7 @@
-**/Lib/
+# Virtual environments
+**/envs
+
+# Python compiled files
 **/__pycache__/
 
 .dbsqlite3
