@@ -1,0 +1,13 @@
+<html>
+<head>
+    <title>Flight Search</title>
+</head>
+<body>
+    <h1>Flight Search</h1>
+    <form method="post" action="{% url 'search_flight' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Search">
+    </form>
+</body>
+</html>
