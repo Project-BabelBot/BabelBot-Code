@@ -1,5 +1,5 @@
 # These libraries are used by Django for rendering your pages.
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 
 import numpy as np
@@ -349,3 +349,7 @@ def main(request):
         return HttpResponse("Could not understand audio. Please press the button again to try again!")
 
     return render(request,"kiosk.html",details)
+
+
+def test(request):
+    return JsonResponse({"message": "Hello World"})

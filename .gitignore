@@ -5,3 +5,5 @@
 **/__pycache__/
 
 .dbsqlite3
+
+frontend/node_modules/
