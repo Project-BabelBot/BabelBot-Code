@@ -1,3 +1,9 @@
+# Python compiled files
+**/__pycache__/
+
+# SQLiite database files
+.dbsqlite3
+
 # Logs
 frontend/logs
 frontend/*.log
