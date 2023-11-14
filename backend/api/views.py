@@ -1,6 +1,6 @@
 # These libraries are used by Django for rendering your pages.
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 
 import numpy as np
 import random
@@ -17,10 +17,12 @@ from collections import defaultdict, Counter
 import nltk
 nltk.download('all')
 from nltk.stem import WordNetLemmatizer
+
 import tensorflow as tf
-from tensorflow.keras.models import load_model, Sequential
-from tensorflow.keras.layers import Dense, Activation, Dropout
-from tensorflow.keras.optimizers import SGD
+from tensorflow import keras
+from keras.models import load_model, Sequential
+from keras.layers import Dense, Dropout
+from keras.optimizers import SGD
 
 from deep_translator import GoogleTranslator
 
@@ -184,7 +186,7 @@ def capture_and_recognize(request):
         with sr.Microphone() as source:
             audio_text = r.listen(source)
             try:
-                # Using google speech recognition
+                # Using Google speech recognition
                 text_en = r.recognize_google(audio_text)
                 # Adding French language option
                 text_fr = r.recognize_google(audio_text, language="fr-FR")
@@ -205,7 +207,7 @@ def capture_and_recognize(request):
 def lang_detect(response1, response2, response3):
     language_prob = []
 
-    # Make into String Elements for Data Cleaning
+    # Make into string elements for data cleaning
     detect_en = [str(i) for i in detect_langs(response1)]
     language_prob.extend(detect_en)
 
@@ -258,7 +260,7 @@ def ISO_639(langauge_code, probability):
     return ISO_639_2
 
 
-# When the Button is Pressed
+# When the button is pressed
 def main(request):
 
     intents = load_intents()
@@ -350,6 +352,7 @@ def main(request):
 
     return render(request,"kiosk.html",details)
 
-
+# Test API
 def test(request):
+    print(request)
     return JsonResponse({"message": "Hello World"})
