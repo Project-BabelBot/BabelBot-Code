@@ -1,6 +1,8 @@
 # These libraries are used by Django for rendering your pages.
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
 from django.shortcuts import render
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 import numpy as np
 import random
@@ -58,7 +60,8 @@ def load_intents():
         intents = json.load(file)
     return intents
 
-def training(request):
+
+def training():
     intents = load_intents()
 
     lemmatizer = WordNetLemmatizer()
@@ -260,6 +263,7 @@ def ISO_639(langauge_code, probability):
     return ISO_639_2
 
 
+@api_view(["GET"])
 # When the button is pressed
 def main(request):
 
@@ -352,7 +356,9 @@ def main(request):
 
     return render(request,"kiosk.html",details)
 
+
 # Test API
+@api_view(["GET"])
 def test(request):
-    print(request)
-    return JsonResponse({"message": "Hello World"})
+    print(request.data)
+    return Response({"message": "Hello World"})
