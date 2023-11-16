@@ -256,10 +256,14 @@ def capture_and_recognize(request):
                 return (text_en, text_fr, text_es)
 
             except sr.UnknownValueError:
-                return HttpResponse("Could not understand audio. Please press the button again to try again!")
+                details = {"User_Request": ' ',
+                           "Chatbot_Response": 'No audio input given. Please press the button to speak to BabelBot!'}
+                return render(request,"kiosk.html", details)
             
             except sr.RequestError as e:
-                return HttpResponse(f"Could not request results from Google Speech Recognition service; {e}")
+                details = {"User_Request": ' ',
+                           "Chatbot_Response": f'Could not request results from Google Speech Recognition service; {e}'}
+                return render(request,"kiosk.html", details)
             
     return HttpResponse("Method Not Allowed")
 
@@ -330,10 +334,34 @@ def ISO_639(langauge_code, probability):
     
     return ISO_639_2
 
+'''
+Function to Exist BabelBot
+'''
 def exit_input(message):
     if message.lower() == 'exit please':
         return 1
     return 0
+
+'''
+Function for Audio Response in Different Languages
+'''
+def speak_response(lang_ISO, res_en2lang, lang_voice):
+    
+    if lang_ISO in lang_voice:
+        engine = pyttsx3.init()
+        if lang_ISO == 'es':
+            engine.setProperty('rate', 150)  # Speed of speech (words per minute)
+        voices = engine.getProperty('voices')
+        engine.setProperty('voice', voices[lang_voice[lang_ISO]].id)
+        engine.say(res_en2lang)
+        engine.runAndWait()
+
+    # else:
+    #     engine = pyttsx3.init()
+    #     voices = engine.getProperty('voices')
+    #     engine.setProperty('voice', voices[lang_voice[1]].id)
+    #     engine.say('Language not in the system. Please try again in English, French or Spnaish.')
+    #     engine.runAndWait()
 
 '''
 Main Function
@@ -342,23 +370,35 @@ Main Function
 # When the button is pressed
 def main(request):
 
-    intents = load_intents()
+    lang_voice = {'en': 1, 'es': 2, 'fr': 3}    # Language Voices
 
+    intents = load_intents() # Load the Intents_English.json file
+
+    '''
+    Getting the Audio Input
+    '''
     try:
         English, French, Spanish = capture_and_recognize(request)
+
+    # If no Audio Input retrieved, prompt the user to speak again
     except:
-        details = {
-                "User_Request": ' ',
-                "Chatbot_Response": 'No audio input given. Please press the button to speak to BabelBot!'
-                }
+        details = {"User_Request": ' ',
+                   "Chatbot_Response": 'Invalid audio input given. Please press the button to speak to BabelBot!'}
+        
+        lang_ISO = 'en'
+        res_en2lang = 'Invalid audio input given. Please press the button to speak to BabelBot!'
+        speak_response(lang_ISO, res_en2lang, lang_voice)
+
         return render(request,"kiosk.html", details)
     
+    '''
+    Response Generation in Language
+    '''
     possible_langs = lang_detect(English, French, Spanish)
     lang_list, prob_list = lang_prob(possible_langs)
     lang_ISO = ISO_639(lang_list, prob_list)
 
     lang_map = {'en': English, 'es': Spanish, 'fr': French}
-    lang_voice = {'en': 1, 'es': 2, 'fr': 3}
 
     try:
         if lang_ISO in lang_map:
@@ -367,36 +407,28 @@ def main(request):
             translator_lang2en = GoogleTranslator(source = 'auto', target = 'en')
             lang2en = translator_lang2en.translate(message)
 
+            # Exit BabelBot
             if exit_input(message) == 1:
-                details = {
-                    "User_Request": message,
-                    "Chatbot_Response": 'Successfully existed BabelBot!'
-                    }
+                details = {"User_Request": message,
+                           "Chatbot_Response": 'Successfully exited BabelBot!'}
+                
+                lang_ISO = 'en'
+                res_en2lang = 'Successfully exited BabelBot!'
+                speak_response(lang_ISO, res_en2lang, lang_voice)
+
                 return render(request,"kiosk.html", details)
             
             ints = predict_class(lang2en)
             res = get_response(ints, intents)
             translator_en2lang = GoogleTranslator(source = 'auto', target = lang_ISO)
             res_en2lang = translator_en2lang.translate(res)
-            details = {
-                "User_Request": message,
-                "Chatbot_Response": res_en2lang
-                }
+            details = {"User_Request": message,
+                       "Chatbot_Response": res_en2lang}
             
-            if lang_ISO in lang_voice:
-                engine = pyttsx3.init()
-                if lang_ISO == 'es':
-                    engine.setProperty('rate', 125)  # Speed of speech (words per minute)
-                voices = engine.getProperty('voices')
-                engine.setProperty('voice', voices[lang_voice[lang_ISO]].id)
-                engine.say(res_en2lang)
-                engine.runAndWait()
-    
-        else:
-            return HttpResponse("Could not understand audio. Please press the button again to try again!")
+            speak_response(lang_ISO, res_en2lang, lang_voice)
 
     except ValueError:
-            return HttpResponse("Could not understand audio. Please press the button again to try again!")
+        return HttpResponse("Could not understand audio. Please press the button again to try again!")
 
     return render(request,"kiosk.html", details)
 
