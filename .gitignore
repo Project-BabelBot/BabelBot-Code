@@ -1,8 +1,11 @@
 # Python compiled files
 **/__pycache__/
 
-# SQLiite database files
+# SQLite database files
 .dbsqlite3
+
+# Virtual environments
+**/envs
 
 # Logs
 frontend/logs
