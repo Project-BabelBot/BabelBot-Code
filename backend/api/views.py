@@ -330,6 +330,11 @@ def ISO_639(langauge_code, probability):
     
     return ISO_639_2
 
+def exit_input(message):
+    if message.lower() == 'exit please':
+        return 1
+    return 0
+
 '''
 Main Function
 '''
@@ -339,96 +344,155 @@ def main(request):
 
     intents = load_intents()
 
-    English, French, Spanish = capture_and_recognize(request)
+    try:
+        English, French, Spanish = capture_and_recognize(request)
+    except:
+        details = {
+                "User_Request": ' ',
+                "Chatbot_Response": 'No audio input given. Please press the button to speak to BabelBot!'
+                }
+        return render(request,"kiosk.html", details)
+    
     possible_langs = lang_detect(English, French, Spanish)
     lang_list, prob_list = lang_prob(possible_langs)
     lang_ISO = ISO_639(lang_list, prob_list)
 
-    if lang_ISO == 'en':
-        message = English
-        
-        if message == 'exit please':
-            details = {"User_Request": 'User has exited BableBot. Please press the button to speak to BabelBot!'}
-            quit
+    lang_map = {'en': English, 'es': Spanish, 'fr': French}
+    lang_voice = {'en': 1, 'es': 2, 'fr': 3}
 
-        time.sleep(1)
+    try:
+        if lang_ISO in lang_map:
+            message = lang_map[lang_ISO]
 
-        # Speak response out loud in English
-        ints = predict_class(message)
-        res = get_response(ints, intents)
-        details = {
-            "User_Request": English,
-            "Chatbot_Response": res
-            }
-        
-        engine = pyttsx3.init()
-        voices = engine.getProperty('voices')
-        engine.setProperty('voice', voices[1].id)
-        engine.say(res)
-        engine.runAndWait()
+            translator_lang2en = GoogleTranslator(source = 'auto', target = 'en')
+            lang2en = translator_lang2en.translate(message)
 
-    elif lang_ISO == 'fr':
-        message = French
-
-        time.sleep(1)
-
-        translator_fr2en = GoogleTranslator(source = 'auto', target = 'en')
-        fr2en = translator_fr2en.translate(message)
-
-        if fr2en.lower() == 'exit please':
-            details = {"User_Request": 'User has exited BableBot. Please press the button to speak to BabelBot!'}
-            quit
-        
-        ints = predict_class(fr2en)
-        res = get_response(ints, intents)
-        translator_en2fr = GoogleTranslator(source = 'auto', target = 'fr')
-        res_en2fr = translator_en2fr.translate(res)
-        details = {
-            "User_Request": French,
-            "Chatbot_Response": res_en2fr
-            }
-        
-        # Speak response out loud in French
-        engine = pyttsx3.init()
-        voices = engine.getProperty('voices')
-        engine.setProperty('voice', voices[3].id)
-        engine.say(res_en2fr)
-        engine.runAndWait()
+            if exit_input(message) == 1:
+                details = {
+                    "User_Request": message,
+                    "Chatbot_Response": 'Successfully existed BabelBot!'
+                    }
+                return render(request,"kiosk.html", details)
+            
+            ints = predict_class(lang2en)
+            res = get_response(ints, intents)
+            translator_en2lang = GoogleTranslator(source = 'auto', target = lang_ISO)
+            res_en2lang = translator_en2lang.translate(res)
+            details = {
+                "User_Request": message,
+                "Chatbot_Response": res_en2lang
+                }
+            
+            if lang_ISO in lang_voice:
+                engine = pyttsx3.init()
+                if lang_ISO == 'es':
+                    engine.setProperty('rate', 125)  # Speed of speech (words per minute)
+                voices = engine.getProperty('voices')
+                engine.setProperty('voice', voices[lang_voice[lang_ISO]].id)
+                engine.say(res_en2lang)
+                engine.runAndWait()
 
 
-    elif lang_ISO == 'es':
-        message = Spanish
+    #     if lang_ISO == 'en':
+    #         message = English
+            
+    #         if exit_input(message) == 1:
+    #             details = {
+    #             "User_Request": message,
+    #             "Chatbot_Response": 'Successfully existed BabelBot!'
+    #             }
+    #             return render(request,"kiosk.html", details)
+            
+    #         # if message == 'exit please':
+    #         #     details = {"User_Request": 'User has exited BableBot. Please press the button to speak to BabelBot!'}
+    #         #     quit
 
-        time.sleep(1)
+    #         time.sleep(1)
 
-        translator_es2en = GoogleTranslator(source = 'auto', target = 'en')
-        es2en = translator_es2en.translate(message)
+    #         # Speak response out loud in English
+    #         ints = predict_class(message)
+    #         res = get_response(ints, intents)
+    #         details = {
+    #             "User_Request": English,
+    #             "Chatbot_Response": res
+    #             }
+            
+    #         engine = pyttsx3.init()
+    #         voices = engine.getProperty('voices')
+    #         engine.setProperty('voice', voices[1].id)
+    #         engine.say(res)
+    #         engine.runAndWait()
 
-        if es2en.lower() == 'exit please':
-            details = {"User_Request": 'User has exited BableBot. Please press the button to speak to BabelBot!'}
-            quit
-        
-        ints = predict_class(es2en)
-        res = get_response(ints, intents)
-        translator_en2es = GoogleTranslator(source = 'auto', target = 'es')
-        res_en2es = translator_en2es.translate(res)
-        details = {
-            "User_Request": Spanish,
-            "Chatbot_Response": res_en2es
-            }
-        
-        # Speak response out loud in Spanish
-        engine = pyttsx3.init()
-        voices = engine.getProperty('voices')
-        engine.setProperty('voice', voices[2].id)
-        engine.say(res_en2es)
-        engine.runAndWait()
+    #     elif lang_ISO == 'fr':
+    #         message = French
+
+    #         time.sleep(1)
+
+    #         translator_fr2en = GoogleTranslator(source = 'auto', target = 'en')
+    #         fr2en = translator_fr2en.translate(message)
+
+    #         if exit_input(fr2en) == 1:
+    #             details = {
+    #             "User_Request": message,
+    #             "Chatbot_Response": 'Successfully existed BabelBot!'
+    #             }
+    #             return render(request,"kiosk.html", details)
+            
+    #         ints = predict_class(fr2en)
+    #         res = get_response(ints, intents)
+    #         translator_en2fr = GoogleTranslator(source = 'auto', target = 'fr')
+    #         res_en2fr = translator_en2fr.translate(res)
+    #         details = {
+    #             "User_Request": French,
+    #             "Chatbot_Response": res_en2fr
+    #             }
+            
+    #         # Speak response out loud in French
+    #         engine = pyttsx3.init()
+    #         voices = engine.getProperty('voices')
+    #         engine.setProperty('voice', voices[3].id)
+    #         engine.say(res_en2fr)
+    #         engine.runAndWait()
+
+
+    #     elif lang_ISO == 'es':
+    #         message = Spanish
+
+    #         time.sleep(1)
+
+    #         translator_es2en = GoogleTranslator(source = 'auto', target = 'en')
+    #         es2en = translator_es2en.translate(message)
+
+    #         if exit_input(es2en) == 1:
+    #             details = {
+    #             "User_Request": message,
+    #             "Chatbot_Response": 'Successfully existed BabelBot!'
+    #             }
+    #             return render(request,"kiosk.html", details)
+            
+    #         ints = predict_class(es2en)
+    #         res = get_response(ints, intents)
+    #         translator_en2es = GoogleTranslator(source = 'auto', target = 'es')
+    #         res_en2es = translator_en2es.translate(res)
+    #         details = {
+    #             "User_Request": Spanish,
+    #             "Chatbot_Response": res_en2es
+    #             }
+            
+    #         # Speak response out loud in Spanish
+    #         engine = pyttsx3.init()
+    #         voices = engine.getProperty('voices')
+    #         engine.setProperty('voice', voices[2].id)
+    #         engine.say(res_en2es)
+    #         engine.runAndWait()
     
-    else:
-        return HttpResponse("Could not understand audio. Please press the button again to try again!")
+        else:
+            return HttpResponse("Could not understand audio. Please press the button again to try again!")
+
+    except ValueError:
+            return HttpResponse("Could not understand audio. Please press the button again to try again!")
 
     return render(request,"kiosk.html", details)
-
 
 # Test API
 @api_view(["GET"])
