@@ -1,0 +1,11 @@
+.Avatar {
+    height: 5000px;
+    width: 100%;
+    border: 5px solid #000000;
+    z-index: 1;
+}
+
+.model {
+    height: 100%;
+    width: 100%;
+}

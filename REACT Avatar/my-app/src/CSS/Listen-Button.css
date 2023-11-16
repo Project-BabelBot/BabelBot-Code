@@ -1,0 +1,12 @@
+.listeningEar {
+    height: 300px;
+    width: 300px;
+    object-position: 20px;
+    object-fit: cover;
+    border-radius: 150px;
+    position: absolute;
+    left: 150px;
+    top: 300px;
+    background-color: #13cf13;
+    z-index: 4;
+}
