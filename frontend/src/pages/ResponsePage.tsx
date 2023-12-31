@@ -3,6 +3,7 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import { useState } from "react";
+import ActionButtons from "../components/ActionButtons";
 
 const styles = {
   // TODO: Fix theming
@@ -51,6 +52,7 @@ const ResponsePage = () => {
 
   return (
     <Box>
+      <ActionButtons />
       <List component="div">
         {messages.map((o) => {
           return (
