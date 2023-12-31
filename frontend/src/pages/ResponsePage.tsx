@@ -7,6 +7,11 @@ import { useState } from "react";
 const styles = {
   // TODO: Fix theming
   botMessage: {
+    alignItems: "flex-start",
+    display: "flex",
+    flexDirection: "column",
+  },
+  botMessageText: {
     backgroundColor: "primary.dark",
     border: 2,
     borderColor: "secondary.main",
@@ -17,14 +22,20 @@ const styles = {
   },
   userMessage: {
     alignItems: "flex-end",
+    display: "flex",
+    flexDirection: "column",
+  },
+  userMessageText: {
     backgroundColor: "#F3F1EE",
     border: 2,
     borderColor: "secondary.main",
     borderRadius: 2,
     boxSizing: "border-box",
-    display: "flex",
-    flexDirection: "column",
     padding: 1,
+  },
+  test: {
+    display: "flex",
+    flex: 1,
   },
 };
 
@@ -39,13 +50,18 @@ const ResponsePage = () => {
   const [messages, setmessages] = useState(demoMessages);
 
   return (
-    <>
+    <Box>
       <List component="div">
         {messages.map((o) => {
           return (
             <ListItem component="div" key={o.id}>
               <ListItemText
                 sx={o.userIsSender ? styles.userMessage : styles.botMessage}
+                primaryTypographyProps={{
+                  sx: o.userIsSender
+                    ? styles.userMessageText
+                    : styles.botMessageText,
+                }}
               >
                 {o.content}
               </ListItemText>
@@ -53,7 +69,7 @@ const ResponsePage = () => {
           );
         })}
       </List>
-    </>
+    </Box>
   );
 };
 
