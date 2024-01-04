@@ -1,37 +1,58 @@
 import { Box, Button, Typography } from "@mui/material";
 import logo from "../assets/logo.png";
+import Clock from "../components/Clock";
 
 const styles = {
-  header: {
-    alignItems: "flex-start",
+  avatar: {
+    backgroundColor: "red",
+    height: "500px",
+    width: "500px",
   },
-  box: {
+  avatarContainer: {
+    display: "flex",
+    justifyContent: "center",
+    paddingY: 7,
+  },
+  button: { height: "100%" },
+  buttonContainer: {
+    flex: 1,
+  },
+  root: {
+    display: "flex",
+    flexDirection: "column",
     height: "100%",
+  },
+  header: {
+    display: "flex",
+    justifyContent: "space-between",
+    paddingTop: 1,
+    paddingX: 1,
   },
 };
 
 const Idle = () => {
   return (
-    <Box>
-      {/* <Box>
-        <img
+    <Box sx={styles.root}>
+      <Box sx={styles.header}>
+        <Box
+          component="img"
+          alt="BabelBot Logo"
           src={logo}
-          alt="BabelBot logo"
-          style={{
+          sx={{
             width: 150,
             height: 100,
-            position: "fixed",
-            top: "10px",
-            left: "10px",
           }}
         />
-      </Box> */}
-      <Box>
-        <Typography>Insert Avatar</Typography>
+        <Clock />
       </Box>
-      <Button fullWidth variant="contained">
-        Touch to Start
-      </Button>
+      <Box sx={styles.avatarContainer}>
+        <Box sx={styles.avatar}></Box>
+      </Box>
+      <Box sx={styles.buttonContainer}>
+        <Button fullWidth variant="contained" sx={styles.button}>
+          <Typography variant="h3">Touch to Start</Typography>
+        </Button>
+      </Box>
     </Box>
   );
 };
