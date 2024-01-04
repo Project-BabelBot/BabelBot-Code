@@ -6,12 +6,15 @@ import {
   createRoutesFromElements,
 } from "react-router-dom";
 import ResponsePage from "./pages/ResponsePage";
+import Idle from "./pages/Idle";
+import Clock from "./components/Clock";
+import "./App.css";
 
 const App = () => {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path="/" element={<Root />}>
-        <Route index element={<Home />} />
+        <Route index element={<Idle />} />
         <Route path="/response" element={<ResponsePage />} />
       </Route>
     )
@@ -20,19 +23,10 @@ const App = () => {
   return <RouterProvider router={router} />;
 };
 
-const Home = () => {
-  return (
-    <>
-      <h1>BableBot Home</h1>
-    </>
-  );
-};
-
 const Root = () => {
   return (
     <>
-      <h1>Root</h1>
-
+      <Clock />
       <div>
         <Outlet />
       </div>

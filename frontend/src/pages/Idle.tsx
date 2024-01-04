@@ -1,17 +1,19 @@
 import { Box, Button, Typography } from "@mui/material";
 import logo from "../assets/logo.png";
-import Clock from "../components/Clock";
 
 const styles = {
   header: {
     alignItems: "flex-start",
+  },
+  box: {
+    height: "100%",
   },
 };
 
 const Idle = () => {
   return (
     <Box>
-      <Box sx={styles.header}>
+      {/* <Box>
         <img
           src={logo}
           alt="BabelBot logo"
@@ -23,14 +25,13 @@ const Idle = () => {
             left: "10px",
           }}
         />
-
-        <Clock />
-      </Box>
-
+      </Box> */}
       <Box>
         <Typography>Insert Avatar</Typography>
       </Box>
-      <Button>Touch to Start</Button>
+      <Button fullWidth variant="contained">
+        Touch to Start
+      </Button>
     </Box>
   );
 };
