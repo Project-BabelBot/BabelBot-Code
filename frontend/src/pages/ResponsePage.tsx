@@ -1,15 +1,26 @@
+import VolumeUpIcon from "@mui/icons-material/VolumeUp";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import { useState } from "react";
 import ActionButtons from "../components/ActionButtons";
+import IconButton from "@mui/material/IconButton";
 
 const styles = {
   // TODO: Fix theming
+  actionButton: { padding: 0 },
+  actionItems: {
+    alignItems: "center",
+    display: "flex",
+    gap: 1,
+    padding: 1,
+  },
   botMessage: {
     alignItems: "flex-start",
     display: "flex",
+    flex: "0 1 auto",
     flexDirection: "column",
   },
   botMessageText: {
@@ -34,21 +45,19 @@ const styles = {
     boxSizing: "border-box",
     padding: 1,
   },
-  test: {
-    display: "flex",
-    flex: 1,
-  },
 };
 
 type Message = {
-  id: number;
+  attachment?: string;
   content: string;
-  userIsSender: boolean;
+  id: number;
   timestamp: string;
+  userIsSender: boolean;
 };
 
 const ResponsePage = () => {
   const [messages, setmessages] = useState(demoMessages);
+  const [open, setOpen] = useState(false);
 
   return (
     <Box>
@@ -58,15 +67,30 @@ const ResponsePage = () => {
           return (
             <ListItem component="div" key={o.id}>
               <ListItemText
-                sx={o.userIsSender ? styles.userMessage : styles.botMessage}
                 primaryTypographyProps={{
                   sx: o.userIsSender
                     ? styles.userMessageText
                     : styles.botMessageText,
                 }}
+                sx={o.userIsSender ? styles.userMessage : styles.botMessage}
               >
                 {o.content}
               </ListItemText>
+              {!o.userIsSender && (
+                <Box sx={styles.actionItems}>
+                  {o.attachment && (
+                    <IconButton
+                      onClick={() => setOpen(true)}
+                      sx={styles.actionButton}
+                    >
+                      <OpenInNewIcon />
+                    </IconButton>
+                  )}
+                  <IconButton sx={styles.actionButton}>
+                    <VolumeUpIcon />
+                  </IconButton>
+                </Box>
+              )}
             </ListItem>
           );
         })}
@@ -84,8 +108,10 @@ const demoMessages: Message[] = [
     timestamp: new Date(2023, 12, 29, 12, 0, 0).toISOString(),
   },
   {
+    attachment: "Hello",
     id: 2,
-    content: "Hello user!",
+    content:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Nisi quis eleifend quam adipiscing. Ipsum a arcu cursus vitae congue mauris. Nunc sed id semper risus in hendrerit gravida. Cursus euismod quis viverra nibh cras pulvinar mattis. Gravida quis blandit turpis cursus in. Porttitor lacus luctus accumsan tortor posuere ac ut consequat semper. Adipiscing vitae proin sagittis nisl rhoncus mattis rhoncus. Aliquam ut porttitor leo a. Amet mauris commodo quis imperdiet massa tincidunt nunc pulvinar. Pulvinar pellentesque habitant morbi tristique senectus et netus et malesuada.!",
     userIsSender: false,
     timestamp: new Date(2023, 12, 29, 12, 1, 0).toISOString(),
   },
@@ -96,6 +122,7 @@ const demoMessages: Message[] = [
     timestamp: new Date(2023, 12, 29, 12, 0, 0).toISOString(),
   },
   {
+    attachment: "Hello",
     id: 4,
     content: "Hello user!",
     userIsSender: false,
