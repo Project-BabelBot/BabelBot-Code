@@ -7,6 +7,12 @@ import ListItemText from "@mui/material/ListItemText";
 import { useState } from "react";
 import ActionButtons from "../components/ActionButtons";
 import IconButton from "@mui/material/IconButton";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogActions from "@mui/material/DialogActions";
+import Button from "@mui/material/Button";
 
 const styles = {
   // TODO: Fix theming
@@ -58,6 +64,12 @@ type Message = {
 const ResponsePage = () => {
   const [messages, setmessages] = useState(demoMessages);
   const [open, setOpen] = useState(false);
+  const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
+
+  const handleDialogClose = () => {
+    setOpen(false);
+    setSelectedMessage(null);
+  };
 
   return (
     <Box>
@@ -80,7 +92,10 @@ const ResponsePage = () => {
                 <Box sx={styles.actionItems}>
                   {o.attachment && (
                     <IconButton
-                      onClick={() => setOpen(true)}
+                      onClick={() => {
+                        setOpen(true);
+                        setSelectedMessage(o);
+                      }}
                       sx={styles.actionButton}
                     >
                       <OpenInNewIcon />
@@ -95,6 +110,17 @@ const ResponsePage = () => {
           );
         })}
       </List>
+      {selectedMessage && (
+        <Dialog open={open} onClose={handleDialogClose}>
+          <DialogTitle>Image</DialogTitle>
+          <DialogContent>
+            <DialogContentText>{selectedMessage.content}</DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDialogClose}>Close</Button>
+          </DialogActions>
+        </Dialog>
+      )}
     </Box>
   );
 };
