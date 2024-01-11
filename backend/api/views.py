@@ -78,8 +78,8 @@ def training():
     """
     Training the NLP model
     """
-    intents = load_intents()            # Loading JSON file with conversational speech and responses
-    lemmatizer = WordNetLemmatizer()    # Algorithm that reduces words to their base or canonical form
+    intents = load_intents()
+    lemmatizer = WordNetLemmatizer()
 
     words = []
     classes = []
