@@ -76,7 +76,7 @@ def load_intents():
 
 def training():
     """
-    Training the NLP Model  
+    Training the NLP model
     """
     intents = load_intents()            # Loading JSON file with conversational speech and responses
     lemmatizer = WordNetLemmatizer()    # Algorithm that reduces words to their base or canonical form
@@ -159,7 +159,7 @@ def cleaning_up_sentence(sentence):
 
 def bag_of_words(sentence):
     """
-    Function for Bag-of-Words, a representation of text that describes the occurrence of words within the sentence
+    Function for bag-of-words, a representation of text that describes the occurrence of words within the sentence
     """
     words = load_words_pkl()
     sentence_words = cleaning_up_sentence(sentence)
@@ -223,9 +223,7 @@ def capture_and_recognize(request):
             try:
                 # Using Google speech recognition
                 text_en = r.recognize_google(audio_text)
-                # Adding French language option
                 text_fr = r.recognize_google(audio_text, language="fr-FR")
-                # Adding Spanish language option
                 text_es = r.recognize_google(audio_text, language="es-AR")
 
                 return (text_en, text_fr, text_es)
@@ -283,7 +281,7 @@ def lang_prob(lang_probability):
 
 def ISO_639(langauge_code, probability):
     """
-    Function to get the Language ISO
+    Function to get the language ISO
     """
     lang_counter = Counter(langauge_code)
 
