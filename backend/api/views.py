@@ -73,8 +73,8 @@ def load_intents():
         intents = json.load(file)
     return intents
 
-
-def training():
+@api_view(["GET"])
+def training(request):
     """
     Training the NLP model
     """
@@ -102,8 +102,8 @@ def training():
     words = sorted(set(words)) # Sort an eliminate duplicates
     classes = sorted(set(classes))
 
-    pickle.dump(words, open("words.pkl", "wb"))
-    pickle.dump(classes, open("classes.pkl", "wb"))
+    pickle.dump(words, open(os.path.join(os.path.dirname(__file__), "words.pkl"), "wb"))
+    pickle.dump(classes, open(os.path.join(os.path.dirname(__file__), "classes.pkl"), "wb"))
 
     training = []
     output_empty = [0] * len(classes)
@@ -141,7 +141,7 @@ def training():
     model.compile(loss=tf.keras.losses.CategoricalCrossentropy(), optimizer=sgd, metrics=["accuracy"])
     hist = model.fit(np.array(train_x), np.array(train_y), epochs=200, batch_size=5, verbose=1)
 
-    model.save("chatbotmodel.h5", hist)
+    model.save("/api/chatbotmodel.h5", hist)
 
     return HttpResponse("Created words.pkl.<br>Created classes.pkl.<br>Saved NLP Model (chatbotmodel.h5).<br>Training of the NLP Model Completed!")
 
