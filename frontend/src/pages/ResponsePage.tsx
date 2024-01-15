@@ -38,6 +38,8 @@ const styles = {
     color: "primary.contrastText",
     padding: 1,
   },
+  chatList: { overflowY: "scroll" },
+  root: { display: "flex", flexDirection: "column", height: "100%" },
   userMessage: {
     alignItems: "flex-end",
     display: "flex",
@@ -72,9 +74,9 @@ const ResponsePage = () => {
   };
 
   return (
-    <Box>
+    <Box sx={styles.root}>
       <ActionButtons />
-      <List component="div">
+      <List sx={styles.chatList} component="div">
         {messages.map((o) => {
           return (
             <ListItem component="div" key={o.id}>
