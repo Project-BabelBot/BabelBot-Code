@@ -1,3 +1,4 @@
+import CloseIcon from "@mui/icons-material/Close";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import Box from "@mui/material/Box";
@@ -11,8 +12,6 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
-import DialogActions from "@mui/material/DialogActions";
-import Button from "@mui/material/Button";
 
 const styles = {
   // TODO: Fix theming
@@ -39,6 +38,12 @@ const styles = {
     padding: 1,
   },
   chatList: { overflowY: "scroll" },
+  dialogIconButton: { padding: 0 },
+  dialogTitle: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
   root: { display: "flex", flexDirection: "column", height: "100%" },
   userMessage: {
     alignItems: "flex-end",
@@ -114,13 +119,18 @@ const ResponsePage = () => {
       </List>
       {selectedMessage && (
         <Dialog open={open} onClose={handleDialogClose}>
-          <DialogTitle>Image</DialogTitle>
+          <DialogTitle sx={styles.dialogTitle}>
+            <Box>Attachment</Box>
+            <IconButton
+              onClick={handleDialogClose}
+              sx={styles.dialogIconButton}
+            >
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
           <DialogContent>
             <DialogContentText>{selectedMessage.content}</DialogContentText>
           </DialogContent>
-          <DialogActions>
-            <Button onClick={handleDialogClose}>Close</Button>
-          </DialogActions>
         </Dialog>
       )}
     </Box>
