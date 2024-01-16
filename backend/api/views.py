@@ -4,6 +4,8 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+from .Testing import plustwo
+
 import numpy as np
 import random
 import os
@@ -360,6 +362,10 @@ def main(request):
     
     lang_map = {"en": English, "es": Spanish, "fr": French}
 
+    # Testing.py access
+    # hellooo = plustwo(2)
+    # print('Testing: ', hellooo)
+
     try:
         if lang_ISO in lang_map:
             message = lang_map[lang_ISO]
@@ -390,7 +396,7 @@ def main(request):
     except ValueError:
         return HttpResponse("Could not understand audio. Please press the button again to try again!")
 
-    return render(request,"kiosk.html", details)
+    # return render(request,"kiosk.html", details)
 
 
 @api_view(["GET"])
