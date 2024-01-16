@@ -136,12 +136,11 @@ def training(request):
     model.add(Dropout(0.5))
     model.add(Dense(len(train_y[0]), activation="softmax")) # Layer 4 - (len of tarin_y) = # of neurons and activation function softmax
 
-
     sgd = SGD(learning_rate=0.01, momentum=0.9, nesterov=True)
     model.compile(loss=tf.keras.losses.CategoricalCrossentropy(), optimizer=sgd, metrics=["accuracy"])
     hist = model.fit(np.array(train_x), np.array(train_y), epochs=200, batch_size=5, verbose=1)
 
-    model.save("/api/chatbotmodel.h5", hist)
+    model.save("api/chatbotmodel.h5")
 
     return HttpResponse("Created words.pkl.<br>Created classes.pkl.<br>Saved NLP Model (chatbotmodel.h5).<br>Training of the NLP Model Completed!")
 
@@ -182,6 +181,7 @@ def predict_class(sentence):
     model = load_model(file_path)
 
     bow = bag_of_words(sentence)
+
     res = model.predict(np.array([bow]))[0]
 
     ERROR_THRESHOLD = 0.25
@@ -193,7 +193,7 @@ def predict_class(sentence):
     for r in result:
         return_list.append({"intent": classes[r[0]], "probability": str(r[1])})
 
-    return return_list
+    return return_list 
 
 
 def get_response(intents_list, intents_json):
@@ -348,7 +348,6 @@ def main(request):
     except:
         details = {"User_Request": " ",
                    "Chatbot_Response": "Invalid audio input given. Please press the button to speak to BabelBot!"}
-        
         lang_ISO = "en"
         res_en2lang = "Invalid audio input given. Please press the button to speak to BabelBot!"
         speak_response(lang_ISO, res_en2lang, lang_voice)
@@ -358,35 +357,36 @@ def main(request):
     possible_langs = lang_detect(English, French, Spanish)
     lang_list, prob_list = lang_prob(possible_langs)
     lang_ISO = ISO_639(lang_list, prob_list)
-
+    
     lang_map = {"en": English, "es": Spanish, "fr": French}
 
     try:
         if lang_ISO in lang_map:
             message = lang_map[lang_ISO]
-
+           
             translator_lang2en = GoogleTranslator(source = "auto", target = "en")
             lang2en = translator_lang2en.translate(message)
 
             if exit_input(message) == 1:
                 details = {"User_Request": message,
-                           "Chatbot_Response": "Successfully exited BabelBot!"}
+                            "Chatbot_Response": "Successfully exited BabelBot!"}
                 
                 lang_ISO = "en"
                 res_en2lang = "Successfully exited BabelBot!"
                 speak_response(lang_ISO, res_en2lang, lang_voice)
 
                 return render(request,"kiosk.html", details)
-            
+
             ints = predict_class(lang2en)
             res = get_response(ints, intents)
             translator_en2lang = GoogleTranslator(source = "auto", target = lang_ISO)
             res_en2lang = translator_en2lang.translate(res)
             details = {"User_Request": message,
-                       "Chatbot_Response": res_en2lang}
+                        "Chatbot_Response": res_en2lang}
             
             speak_response(lang_ISO, res_en2lang, lang_voice)
-
+            return render(request,"kiosk.html", details)
+            
     except ValueError:
         return HttpResponse("Could not understand audio. Please press the button again to try again!")
 
