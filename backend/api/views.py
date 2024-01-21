@@ -154,9 +154,9 @@ def main(request):
     except:
         # Handle invalid audio input
         details = {"User_Request": " ",
-                   "Chatbot_Response": "Invalid audio input given. Please press the button to speak to BabelBot!"}
+                   "Chatbot_Response": "Invalid audio input given/no audio input given. Please press the button to speak to BabelBot!"}
         lang_ISO = "en"
-        res_en2lang = "Invalid audio input given. Please press the button to speak to BabelBot!"
+        res_en2lang = "Invalid audio input given/no audio input given. Please press the button to speak to BabelBot!"
 
         # Speak response and render the response in HTML
         speak_response(lang_ISO, res_en2lang, lang_voice)
@@ -207,5 +207,6 @@ def main(request):
             speak_response(lang_ISO, res_en2lang, lang_voice)
             return render(request,"kiosk.html", details)
             
-    except ValueError:
+    except ValueError as e:
+        print(f"Error: {e}")
         return HttpResponse("Could not understand audio. Please press the button again to try again!")

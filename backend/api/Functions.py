@@ -154,21 +154,15 @@ def capture_and_recognize(request):
         r = sr.Recognizer() # Initialize the speech recognizer
 
         with sr.Microphone() as source: # Use the microphone as the audio source
-            audio_text = r.listen(source) # Listen to the audio
+            audio_text = r.listen(source, timeout = 2) # Listen to the audio with a timeout of 5 seconds
 
             try:
                  # Recognize speech using Google Speech Recognition for English, French, and Spanish
-                text_en = r.recognize_google(audio_text)
+                text_en = r.recognize_google(audio_text, language="en-US")
                 text_fr = r.recognize_google(audio_text, language="fr-FR")
                 text_es = r.recognize_google(audio_text, language="es-AR")
 
                 return (text_en, text_fr, text_es) # Return recognized text in English, French, and Spanish
-
-            except sr.UnknownValueError:
-                 # Handle case where no speech is detected
-                details = {"User_Request": " ",
-                           "Chatbot_Response": "No audio input given. Please press the button to speak to BabelBot!"}
-                return render(request,"kiosk.html", details)
             
             except sr.RequestError as e:
                 # Handle case where there is an error with the speech recognition service
@@ -176,7 +170,11 @@ def capture_and_recognize(request):
                            "Chatbot_Response": f"Could not request results from Google Speech Recognition service; {e}"}
                 return render(request,"kiosk.html", details)
             
-    return HttpResponse("Method Not Allowed") # Return a response for other request methods
+            except sr.WaitTimeoutError:
+                # Handle case where no audio input is received within the timeout period
+                details = {"User_Request": " ",
+                           "Chatbot_Response": "No audio input received within the timeout period. Please try again!"}
+                return render(request, "kiosk.html", details)
 
 
 def lang_detect(response1, response2, response3):
