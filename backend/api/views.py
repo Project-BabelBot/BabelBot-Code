@@ -210,3 +210,46 @@ def main(request):
     except ValueError as e:
         print(f"Error: {e}")
         return HttpResponse("Could not understand audio. Please press the button again to try again!")
+
+
+
+from django.shortcuts import render
+from django.http import HttpResponse
+from django.db.models import Q
+from .forms import FlightSearchForm
+from .models import Flight
+
+
+def search_flight(request):
+    cities = Flight.objects.values_list('city', flat=True).distinct()
+
+    if request.method == 'POST':
+        form = FlightSearchForm(request.POST)
+
+        if form.is_valid():
+            query = form.cleaned_data['query']
+            city = form.cleaned_data['city']
+
+            # Check if both flight number and city are selected
+            if query and city:
+                return render(request, 'search_results.html', {'message': 'Please select either Flight Number or City, not both.'})
+
+            # Use Q objects to construct the query
+            query_filter = Q()
+            if query:
+                query_filter |= Q(flight_number__icontains=query)
+            if city:
+                query_filter |= Q(city__iexact=city)
+
+            # Apply the constructed query
+            flights = Flight.objects.filter(query_filter)
+
+            if flights:
+                return render(request, 'search_results.html', {'flights': flights})
+            else:
+                return render(request, 'search_results.html', {'message': 'No flights found for the query.'})
+        else:
+            return render(request, 'search_results.html', {'message': 'Invalid search query.'})
+    else:
+        form = FlightSearchForm()
+        return render(request, 'search_flight.html', {'form': form, 'cities': cities})
