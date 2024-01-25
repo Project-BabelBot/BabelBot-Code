@@ -2,21 +2,16 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from rest_framework.decorators import api_view
-from rest_framework.response import Response
+from django.db.models import Q
+from .forms import FlightSearchForm
+from .models import Flight
 
-from .Functions import *
+from .model_functions import *
 
 import numpy as np
 import random
 import os
-import json
 import pickle
-import time
-
-import speech_recognition as sr
-from langdetect import detect_langs
-
-from collections import defaultdict, Counter
 
 import nltk
 nltk.download("punkt")
@@ -24,13 +19,11 @@ from nltk.stem import WordNetLemmatizer
 
 import tensorflow as tf
 from tensorflow import keras
-from keras.models import load_model, Sequential
+from keras.models import Sequential
 from keras.layers import Dense, Dropout
 from keras.optimizers import SGD
 
 from deep_translator import GoogleTranslator
-
-import pyttsx3
 
 
 @api_view(["GET"])
@@ -46,25 +39,19 @@ def training(request):
     Returns:
         HttpResponse: A response indicating the completion of the training process.
     """
-    # Load intents data
     intents = load_intents()
-
-    # Initialize lemmatizer
     lemmatizer = WordNetLemmatizer()
-
-    # Initialize lists and variables
     words = []
     classes = []
     documents = []
     ignore_letters = ["?", "!", ".", ",", "(", ")"]
 
-    # Iterate through intents and patterns
     for intent in intents["intents"]:
         for pattern in intent["patterns"]:
 
             # Tokenize pattern sentence into individual words or tokens
             word_list = nltk.word_tokenize(pattern) # Split pattern sentence into individual words or tokens
-            words.extend(word_list)                 # Taking the content and appending it to the list
+            words.extend(word_list)
             documents.append((word_list, intent["tag"]))
 
             # Update classes list if not already present
@@ -73,14 +60,14 @@ def training(request):
 
     # Lemmatizing & cleaning up the data
     words = [lemmatizer.lemmatize(word) for word in words if word not in ignore_letters] # Algorithm that reduces words from the words list created to their base or canonical form
-    words = sorted(set(words)) # Sort an eliminate duplicates
+
+    # Sort and eliminate duplicates
+    words = sorted(set(words))
     classes = sorted(set(classes))
 
-    # Save words and classes to pickle files
     pickle.dump(words, open(os.path.join(os.path.dirname(__file__), "words.pkl"), "wb"))
     pickle.dump(classes, open(os.path.join(os.path.dirname(__file__), "classes.pkl"), "wb"))
 
-    # Prepare training data
     training = []
     output_empty = [0] * len(classes)
 
@@ -109,19 +96,15 @@ def training(request):
     model = Sequential()
 
     model.add(Dense(128, input_shape=(len(train_x[0]),), activation="relu")) # Layer 1 - 128 neurons, shape of layer is the shape of the input data, activation function of Rectified Linear Unit (ReLU)
-    model.add(Dropout(0.5))                                                  # Dropout Layer to reduce overfitting by preventing any single neuron from becoming overly specialized and dependent on specific input features
-    model.add(Dense(64, activation="relu"))                                  # Layer 2 - 64 neurons, activation function of Rectified Linear Unit (ReLU)
-    model.add(Dense(32, activation="relu"))                                  # Layer 3 - 32 neurons, activation function of Rectified Linear Unit (ReLU)
+    model.add(Dropout(0.5)) # Dropout Layer to reduce overfitting by preventing any single neuron from becoming overly specialized and dependent on specific input features
+    model.add(Dense(64, activation="relu")) # Layer 2 - 64 neurons, activation function of Rectified Linear Unit (ReLU)
+    model.add(Dense(32, activation="relu")) # Layer 3 - 32 neurons, activation function of Rectified Linear Unit (ReLU)
     model.add(Dropout(0.5))
-    model.add(Dense(len(train_y[0]), activation="softmax"))                  # Layer 4 - (len of tarin_y) = # of neurons and activation function softmax
+    model.add(Dense(len(train_y[0]), activation="softmax")) # Layer 4 - (len of tarin_y) = # of neurons and activation function softmax
 
     sgd = SGD(learning_rate = 0.01, momentum = 0.9, nesterov = True)
     model.compile(loss=tf.keras.losses.CategoricalCrossentropy(), optimizer=sgd, metrics = ["accuracy"])
-
-    # Train the model
-    hist = model.fit(np.array(train_x), np.array(train_y), epochs = 200, batch_size = 5, verbose = 1)
-
-    # Saving the trained model
+    model.fit(np.array(train_x), np.array(train_y), epochs = 200, batch_size = 5, verbose = 1)
     model.save("api/chatbotmodel.h5")
 
     return HttpResponse("Created words.pkl.<br>Created classes.pkl.<br>Saved NLP Model (chatbotmodel.h5).<br>Training of the NLP Model Completed!")
@@ -140,11 +123,7 @@ def main(request):
     Returns:
         HttpResponse: A response indicating the outcome of the chatbot interaction.
     """
-
-    # Mapping of language ISO codes to voice identifiers
     lang_voice = {"en": 1, "es": 2, "fr": 3}
-
-    # Load chatbot intents
     intents = load_intents() 
 
     try:
@@ -158,7 +137,6 @@ def main(request):
         lang_ISO = "en"
         res_en2lang = "Invalid audio input given/no audio input given. Please press the button to speak to BabelBot!"
 
-        # Speak response and render the response in HTML
         speak_response(lang_ISO, res_en2lang, lang_voice)
         return render(request,"kiosk.html", details)
     
@@ -166,8 +144,6 @@ def main(request):
     possible_langs = lang_detect(English, French, Spanish)
     lang_list, prob_list = lang_prob(possible_langs)
     lang_ISO = ISO_639(lang_list, prob_list)
-    
-    # Mapping of language ISO codes to corresponding audio messages
     lang_map = {"en": English, "es": Spanish, "fr": French}
 
     try:
@@ -182,42 +158,26 @@ def main(request):
             if exit_input(message) == 1:
                 details = {"User_Request": message,
                             "Chatbot_Response": "Successfully exited BabelBot!"}
-                
-                # Speak response and render the response in HTML
                 lang_ISO = "en"
                 res_en2lang = "Successfully exited BabelBot!"
                 speak_response(lang_ISO, res_en2lang, lang_voice)
                 return render(request,"kiosk.html", details)
 
-            # Predict the class of the translated message
             ints = predict_class(lang2en)
-
-            # Get a response based on the predicted class
             res = get_response(ints, intents)
 
             # Translate the response back to the original language
             translator_en2lang = GoogleTranslator(source = "auto", target = lang_ISO)
             res_en2lang = translator_en2lang.translate(res)
 
-            # Prepare details for rendering in HTML
             details = {"User_Request": message,
                         "Chatbot_Response": res_en2lang}
-            
-            # Speak response and render the response in HTML
             speak_response(lang_ISO, res_en2lang, lang_voice)
             return render(request,"kiosk.html", details)
             
     except ValueError as e:
         print(f"Error: {e}")
         return HttpResponse("Could not understand audio. Please press the button again to try again!")
-
-
-
-from django.shortcuts import render
-from django.http import HttpResponse
-from django.db.models import Q
-from .forms import FlightSearchForm
-from .models import Flight
 
 
 def search_flight(request):
