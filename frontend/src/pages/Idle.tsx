@@ -1,6 +1,7 @@
 import { Box, Button, Typography } from "@mui/material";
 import logo from "../assets/logo.png";
 import Header from "../components/Header";
+import { useNavigate } from "react-router-dom";
 
 const styles = {
   avatar: {
@@ -39,6 +40,8 @@ const styles = {
 };
 
 const Idle = () => {
+  const navigate = useNavigate();
+
   return (
     <Box sx={styles.root}>
       <Header
@@ -60,7 +63,12 @@ const Idle = () => {
         />
       </Box>
       <Box sx={styles.buttonContainer}>
-        <Button fullWidth variant="contained" sx={styles.button}>
+        <Button
+          fullWidth
+          onClick={() => navigate("/home")}
+          sx={styles.button}
+          variant="contained"
+        >
           <Typography variant="h3">Touch to Start</Typography>
         </Button>
       </Box>
