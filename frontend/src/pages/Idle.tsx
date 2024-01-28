@@ -1,6 +1,6 @@
 import { Box, Button, Typography } from "@mui/material";
 import logo from "../assets/logo.png";
-import Clock from "../components/Clock";
+import Header from "../components/Header";
 
 const styles = {
   avatar: {
@@ -18,11 +18,6 @@ const styles = {
   buttonContainer: {
     flex: "0 0 200px",
   },
-  root: {
-    display: "flex",
-    flexDirection: "column",
-    height: "100%",
-  },
   header: {
     display: "flex",
     justifyContent: "space-between",
@@ -30,23 +25,32 @@ const styles = {
     paddingTop: 1,
     paddingX: 1,
   },
+  logo: {
+    aspectRatio: "1/1",
+    width: 100,
+    height: 100,
+    objectFit: "cover",
+  },
+  root: {
+    display: "flex",
+    flexDirection: "column",
+    height: "100%",
+  },
 };
 
 const Idle = () => {
   return (
     <Box sx={styles.root}>
-      <Box sx={styles.header}>
-        <Box
-          component="img"
-          alt="BabelBot Logo"
-          src={logo}
-          sx={{
-            width: 150,
-            height: 100,
-          }}
-        />
-        <Clock />
-      </Box>
+      <Header
+        leftContent={
+          <Box
+            component="img"
+            alt="BabelBot Logo"
+            src={logo}
+            sx={styles.logo}
+          />
+        }
+      />
       <Box sx={styles.avatarContainer}>
         <Box
           component="img"
