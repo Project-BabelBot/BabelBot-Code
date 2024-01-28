@@ -4,18 +4,19 @@ import Clock from "../components/Clock";
 
 const styles = {
   avatar: {
-    backgroundColor: "red",
-    height: "500px",
-    width: "500px",
+    aspectRatio: "1/1",
+    objectFit: "cover",
   },
   avatarContainer: {
     display: "flex",
+    flex: "1 1 auto",
     justifyContent: "center",
+    overflow: "hidden",
     paddingY: 7,
   },
   button: { height: "100%" },
   buttonContainer: {
-    flex: 1,
+    flex: "0 0 200px",
   },
   root: {
     display: "flex",
@@ -25,6 +26,7 @@ const styles = {
   header: {
     display: "flex",
     justifyContent: "space-between",
+    flex: "0 0 auto",
     paddingTop: 1,
     paddingX: 1,
   },
@@ -46,7 +48,12 @@ const Idle = () => {
         <Clock />
       </Box>
       <Box sx={styles.avatarContainer}>
-        <Box sx={styles.avatar}></Box>
+        <Box
+          component="img"
+          alt="BabelBot Logo"
+          src={logo}
+          sx={styles.avatar}
+        />
       </Box>
       <Box sx={styles.buttonContainer}>
         <Button fullWidth variant="contained" sx={styles.button}>
