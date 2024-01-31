@@ -3,10 +3,11 @@ import Typography from "@mui/material/Typography";
 import { useState, useEffect } from "react";
 
 const styles = {
-  clockContainer: {
+  root: {
     alignItems: "flex-end",
     display: "flex",
     flexDirection: "column",
+    textAlign: "center",
   },
 };
 
@@ -39,7 +40,7 @@ const Clock = () => {
   const formattedTime = currentDateTime.toLocaleString(undefined, timeOptions);
 
   return (
-    <Box sx={styles.clockContainer}>
+    <Box sx={styles.root}>
       <Box>
         <Typography variant="subtitle2">{formattedTime}</Typography>
         <Typography variant="subtitle2">{formattedDate}</Typography>
