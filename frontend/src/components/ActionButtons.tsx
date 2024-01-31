@@ -8,10 +8,10 @@ const styles = {
   activeButton: {
     backgroundColor: "secondary.main",
   },
-  container: { display: "flex", gap: 1 },
   inactiveButton: {
     backgroundColor: "primary.light",
   },
+  root: { display: "flex", gap: 1 },
 };
 
 const ActionButtons = () => {
@@ -42,7 +42,7 @@ const ActionButtons = () => {
 
   return (
     // TODO: Fix Theming
-    <Box sx={styles.container}>
+    <Box sx={styles.root}>
       <IconButton
         onClick={onMicClick}
         sx={micActive ? styles.activeButton : styles.inactiveButton}
