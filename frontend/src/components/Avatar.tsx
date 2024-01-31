@@ -3,17 +3,14 @@ import { Avatar as ReadyPlayerMeAvatar } from "@readyplayerme/visage";
 const Avatar = () => {
   const modelSrc = "https://models.readyplayer.me/6529c84847d203826af5808d.glb";
 
-  const animationSrc = "../assets/female-animation-catwalk.glb";
-  const poseSrc = "../assets/female-pose-standing.glb";
+  // const animationSrc = "./female-animation-catwalk.glb";
+  const poseSrc = "./female-pose-standing.glb";
 
   return (
     <ReadyPlayerMeAvatar
-      animationSrc={animationSrc}
+      // animationSrc={animationSrc}
       backLightColor="#FFB878"
       backLightIntensity={2.2}
-      background={{
-        color: "#FFFF00",
-      }}
       bloom={{
         intensity: 1,
         kernelSize: 1,
@@ -52,7 +49,7 @@ const Avatar = () => {
       keyLightColor="#FFFFFF"
       keyLightIntensity={1.2}
       modelSrc={modelSrc}
-      // poseSrc={poseSrc}
+      poseSrc={poseSrc}
       scale={1}
     />
   );
