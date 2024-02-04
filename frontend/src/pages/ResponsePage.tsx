@@ -12,6 +12,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
+import Header from "../components/Header";
 
 const styles = {
   // TODO: Fix theming
@@ -80,7 +81,7 @@ const ResponsePage = () => {
 
   return (
     <Box sx={styles.root}>
-      <ActionButtons />
+      <Header leftContent={<ActionButtons />} />
       <List sx={styles.chatList} component="div">
         {messages.map((o) => {
           return (
