@@ -9,8 +9,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # Replace 'your_excel_file.xlsx' with the actual path to your Excel file.
-        data = pd.read_excel(r"C:\Users\Nitya\Desktop\ENGG\Capstone\GitHub\BabelBot-Code\backend\api\flight_details_with_airport.xlsx")
-        # data = pd.read_excel(os.path.join(os.path.dirname(__file__), "flight_details_with_airport.xlsx"))
+        # data = pd.read_excel(r"C:\Users\Nitya\Desktop\ENGG\Capstone\GitHub\BabelBot-Code\backend\api\flight_details_with_airport.xlsx")
+        data = pd.read_excel(os.path.join(os.path.dirname(__file__), "flight_details_with_airport.xlsx"))
 
         for index, row in data.iterrows():
             flight_number = row['Flight Number']
