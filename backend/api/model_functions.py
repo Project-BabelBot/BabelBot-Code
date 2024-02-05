@@ -1,4 +1,9 @@
 # These libraries are used by Django for rendering your pages.
+import pyttsx3
+from keras.models import load_model
+from tensorflow import keras
+import tensorflow as tf
+from nltk.stem import WordNetLemmatizer
 from django.shortcuts import render
 
 import numpy as np
@@ -14,13 +19,6 @@ from collections import defaultdict, Counter
 
 import nltk
 nltk.download("punkt")
-from nltk.stem import WordNetLemmatizer
-
-import tensorflow as tf
-from tensorflow import keras
-from keras.models import load_model
-
-import pyttsx3
 
 
 def lemmatizer_initialize():
@@ -60,7 +58,7 @@ def load_intents():
     Loading JSON file with conversational speech and responses
     """
     file_path = os.path.join(os.path.dirname(__file__), "intent_english.json")
-    
+
     with open(file_path, "r") as file:
         intents = json.load(file)
     return intents
@@ -72,8 +70,10 @@ def cleaning_up_sentence(sentence):
     """
     lemmatizer = lemmatizer_initialize()
 
-    sentence_words = nltk.word_tokenize(sentence) # Tokenize the input sentence into individual words
-    sentence_words = [lemmatizer.lemmatize(word) for word in sentence_words] # Lemmatize each word in the sentence, reducing it to its base form
+    # Tokenize the input sentence into individual words
+    sentence_words = nltk.word_tokenize(sentence)
+    # Lemmatize each word in the sentence, reducing it to its base form
+    sentence_words = [lemmatizer.lemmatize(word) for word in sentence_words]
     return sentence_words
 
 
@@ -81,7 +81,7 @@ def bag_of_words(sentence):
     """
     Function for bag-of-words, a representation of text that describes the occurrence of words within the sentence
     """
-    words = load_words_pkl() # Load the words from a pre-saved pickle file
+    words = load_words_pkl()  # Load the words from a pre-saved pickle file
     sentence_words = cleaning_up_sentence(sentence)
     bag = [0] * len(words)
 
@@ -91,7 +91,7 @@ def bag_of_words(sentence):
             if word == w:
                 bag[i] = 1
 
-    return np.array(bag)                          
+    return np.array(bag)
 
 
 def predict_class(sentence):
@@ -102,27 +102,29 @@ def predict_class(sentence):
     file_path = os.path.join(os.path.dirname(__file__), "chatbotmodel.h5")
     model = load_model(file_path)
 
-    bow = bag_of_words(sentence) # Generate the bag-of-words representation for the input sentence
+    # Generate the bag-of-words representation for the input sentence
+    bow = bag_of_words(sentence)
     res = model.predict(np.array([bow]))[0]
 
     ERROR_THRESHOLD = 0.25
-    result = [[i, r] for i, r in enumerate(res) if r > ERROR_THRESHOLD] # Filter predictions above the error threshold, sorting them by probability
-    result.sort(key = lambda x: x[1], reverse = True)
+    # Filter predictions above the error threshold, sorting them by probability
+    result = [[i, r] for i, r in enumerate(res) if r > ERROR_THRESHOLD]
+    result.sort(key=lambda x: x[1], reverse=True)
 
-    # Prepare the return list with intents and their probabilities  
-    return_list = []           
+    # Prepare the return list with intents and their probabilities
+    return_list = []
 
     for r in result:
         return_list.append({"intent": classes[r[0]], "probability": str(r[1])})
 
-    return return_list 
+    return return_list
 
 
 def get_response(intents_list, intents_json):
     """
     Get a response based on the predicted intents list and the provided intents JSON.
     """
-     # Extract the predicted intent tag from the list and get the list of intents from the provided JSON
+    # Extract the predicted intent tag from the list and get the list of intents from the provided JSON
     tag = intents_list[0]["intent"]
     list_of_intents = intents_json["intents"]
 
@@ -130,8 +132,8 @@ def get_response(intents_list, intents_json):
     for i in list_of_intents:
         if i["tag"] == tag:
             result = random.choice(i["responses"])
-            break  
-    
+            break
+
     return result
 
 
@@ -142,22 +144,27 @@ def capture_and_recognize(request):
     if request.method == "GET":
         r = sr.Recognizer()
 
-         # Use the microphone as the audio source and listen to the audio with a timeout of 5 seconds
+        # for testing in django purposes
+        # def capture_and_recognize(request, filepath):
+        # with sr.AudioFile(filepath) as source:
+        # audio_text = r.listen(source, timeout=15)
+
+        # Use the microphone as the audio source and listen to the audio with a timeout of 5 seconds
         with sr.Microphone() as source:
-            audio_text = r.listen(source, timeout = 2)
+            audio_text = r.listen(source, timeout=2)
 
             try:
                 text_en = r.recognize_google(audio_text, language="en-US")
                 text_fr = r.recognize_google(audio_text, language="fr-FR")
                 text_es = r.recognize_google(audio_text, language="es-AR")
                 return (text_en, text_fr, text_es)
-            
+
             # Handle case where there is an error with the speech recognition service
             except sr.RequestError as e:
                 details = {"User_Request": " ",
                            "Chatbot_Response": f"Could not request results from Google Speech Recognition service; {e}"}
-                return render(request,"kiosk.html", details)
-            
+                return render(request, "kiosk.html", details)
+
             # Handle case where no audio input is received within the timeout period
             except sr.WaitTimeoutError:
                 details = {"User_Request": " ",
@@ -195,9 +202,11 @@ def lang_prob(lang_probability):
         code = lang_probability[i][0:2]
         language_code.append(code)
 
-        lang_probability[i] = lang_probability[i][3:] # Update the input list to only contain probabilities
+        # Update the input list to only contain probabilities
+        lang_probability[i] = lang_probability[i][3:]
 
-    probs = [float(i) for i in lang_probability] # Convert the list of probabilities to a list of floats
+    # Convert the list of probabilities to a list of floats
+    probs = [float(i) for i in lang_probability]
 
     return language_code, probs
 
@@ -226,11 +235,13 @@ def ISO_639(langauge_code, probability):
 
         mean_probs = {key: np.mean(val) for key, val in dict(d).items()}
 
-        ISO_639_2 = str(max(mean_probs, key = mean_probs.get)) # Choose the language with the highest mean probability as the ISO code
+        # Choose the language with the highest mean probability as the ISO code
+        ISO_639_2 = str(max(mean_probs, key=mean_probs.get))
 
     else:
-        ISO_639_2 = max(lang_counter, key = lang_counter.get) # Choose the language with the highest count as the ISO code
-    
+        # Choose the language with the highest count as the ISO code
+        ISO_639_2 = max(lang_counter, key=lang_counter.get)
+
     return ISO_639_2
 
 
@@ -244,7 +255,7 @@ def speak_response(lang_ISO, res_en2lang, lang_voice):
     """
     Translate and speak the audio response in different languages.
     """
-     # Check if the language ISO code has a corresponding voice index
+    # Check if the language ISO code has a corresponding voice index
     if lang_ISO in lang_voice:
         engine = pyttsx3.init()
 
@@ -253,6 +264,7 @@ def speak_response(lang_ISO, res_en2lang, lang_voice):
             engine.setProperty("rate", 150)
 
         voices = engine.getProperty("voices")
-        engine.setProperty("voice", voices[lang_voice[lang_ISO]].id) # Set the voice based on the language ISO code
+        # Set the voice based on the language ISO code
+        engine.setProperty("voice", voices[lang_voice[lang_ISO]].id)
         engine.say(res_en2lang)
         engine.runAndWait()
