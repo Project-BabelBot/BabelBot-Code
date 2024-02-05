@@ -1,27 +1,37 @@
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/system";
+import { FunctionComponent, MutableRefObject, useState } from "react";
 import Keyboard from "react-simple-keyboard";
 
-//For styling the keyboard
-const styles = {};
+// type IProps = {
+//   onChange: (input: string) => void;
+//   keyboardRef: MutableRefObject<typeof Keyboard>;
+// };
 
-//Function for when the key is pressed
-const onKeyPress = () => {};
+interface IProps {
+  onChange: (input: string) => void;
+  keyboardRef: MutableRefObject<typeof Keyboard>;
+}
 
-//Function for changing the layout based on the language detected
-const handleLanguage = () => {};
+const VirtualKeyboard: FunctionComponent<IProps> = ({
+  onChange,
+  keyboardRef,
+}) => {
+  const [layoutName, setLayoutName] = useState("default"); // Initialize state for layout
 
-//Function when the shift button is pressed
-const handleShift = () => {};
+  const onKeyPress = (button: string) => {
+    if (button === "{shift}" || button === "{lock}") {
+      setLayoutName(layoutName === "default" ? "shift" : "default");
+    }
+  };
 
-/*Function when the Caps button is pressed.
-  Will have to change layout to upper case*/
-const handleCaps = () => {};
-
-const VirtualKeyboard = () => {
   return (
     <Box>
-      <Typography>Keyboard</Typography>
-      <Keyboard />
+      <Keyboard
+        keyboardRef={(r) => (keyboardRef.current = r)}
+        layoutName={layoutName}
+        onChange={onChange}
+        onKeyPress={onKeyPress}
+      />
     </Box>
   );
 };

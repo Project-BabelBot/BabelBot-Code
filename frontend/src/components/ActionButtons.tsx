@@ -2,7 +2,9 @@ import KeyboardIcon from "@mui/icons-material/Keyboard";
 import MicIcon from "@mui/icons-material/Mic";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
-import { useState } from "react";
+import { ChangeEvent, useRef, useState } from "react";
+import VirtualKeyboard from "./VirtualKeyboard";
+import Keyboard from "react-simple-keyboard/build/components/Keyboard";
 
 const styles = {
   activeButton: {
@@ -40,6 +42,15 @@ const ActionButtons = () => {
     }
   };
 
+  const [input, setInput] = useState("");
+  const keyboard = useRef<any>(null);
+
+  const onChangeInput = (event: ChangeEvent<HTMLInputElement>): void => {
+    const input = event.target.value;
+    setInput(input);
+    keyboard.current!.setInput(input);
+  };
+
   return (
     // TODO: Fix Theming
     <Box sx={styles.root}>
@@ -55,6 +66,9 @@ const ActionButtons = () => {
       >
         <KeyboardIcon fontSize="large" />
       </IconButton>
+      {keyboardActive ? (
+        <VirtualKeyboard keyboardRef={keyboard} onChange={setInput} />
+      ) : null}
     </Box>
   );
 };
