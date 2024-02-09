@@ -898,19 +898,10 @@
                         "How do I find the baggage claim area?"
                   ],
                   "responses": [
-                        "Certainly, I can assist with that. To reach Terminal B, follow the signs. The security checkpoint is ahead, and departure gates are well-marked.",
-                        "Of course! To find Terminal B, follow the signs. The security checkpoint is up ahead, and departure gates are clearly labeled.",
-                        "Sure thing! To get to Terminal B, simply follow the signs. The security checkpoint is ahead, and you'll find the departure gates clearly indicated.",
-                        "Certainly, I can assist with that. To reach Terminal B, follow the signs. The security checkpoint is ahead, and departure gates are well-marked.",
-                        "Of course! To find Terminal B, follow the signs. The security checkpoint is up ahead, and departure gates are clearly labeled.",
-                        "Sure thing! To get to Terminal B, simply follow the signs. The security checkpoint is ahead, and you'll find the departure gates clearly indicated.",
-                        "Absolutely! To find your way to Terminal A, just follow the signs. The baggage claim is nearby, and the departure gates are well-marked.",
-                        "Definitely! To find your way to Terminal A, just follow the signs. The baggage claim is nearby, and the departure gates are well-marked.",
-                        "Yes, certainly! To find your way to Terminal A, just follow the signs. The baggage claim is nearby, and the departure gates are well-marked.",
-                        "Absolutely, I can guide you! To reach the security checkpoint, follow the signs. Terminal A and the departure gates are well-marked.",
-                        "Sure, I can show you the way. To reach the security checkpoint, follow the signs. Terminal A and the departure gates are well-marked.",
-                        "Certainly! To reach the security checkpoint, follow the signs. Terminal A and the departure gates are well-marked.",
-                        "Of course, I can assist you. To reach the security checkpoint, follow the signs. Terminal A and the departure gates are well-marked."
+                        "Certainly, I can assist with that. To reach the Terminal, follow the signs and view the map showing where to locate it.",
+                        "Of course! To find the Terminal, follow the signs. The security checkpoint is up ahead, and departure gates are clearly labeled.",
+                        "Sure thing! To get to the Terminal, simply follow the signs. The security checkpoint is ahead, and you'll find the departure gates clearly indicated.",
+                        "Absolutely! To find your way to the Terminal, just follow the signs. The baggage claim is nearby, and the departure gates are well-marked."
                   ],
                   "extension": {
                   "function": "",
@@ -1014,7 +1005,7 @@
                   },
                   "entityType": "NA",
                   "entities": []
-            }             
+            }            
       ]
 }
   

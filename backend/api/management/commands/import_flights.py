@@ -19,6 +19,7 @@ class Command(BaseCommand):
             city = row['City']
             departure_time = row['Departure Time']
             gate = row['Gate']
+            
             # Assuming 'Airport Name' contains airport codes
             airport_name = row['Airport Name']
 
