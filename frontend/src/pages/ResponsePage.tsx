@@ -70,7 +70,7 @@ type Message = {
 };
 
 const ResponsePage = () => {
-  const [messages, setmessages] = useState(demoMessages);
+  const [messages, setMessages] = useState(demoMessages);
   const [open, setOpen] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
 
