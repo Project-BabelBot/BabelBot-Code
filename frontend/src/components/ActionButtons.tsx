@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import { ChangeEvent, useRef, useState } from "react";
 import VirtualKeyboard from "./VirtualKeyboard";
-import Keyboard from "react-simple-keyboard/build/components/Keyboard";
+import { useDispatch, useSelector } from 'react-redux';
 
 const styles = {
   activeButton: {

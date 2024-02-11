@@ -15,11 +15,13 @@
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.15.2",
     "@mui/material": "^5.14.17",
+    "@reduxjs/toolkit": "^2.1.0",
     "axios": "^1.6.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.21.1",
-    "react-simple-keyboard": "^3.7.76"
+    "react-simple-keyboard": "^3.7.76",
+    "redux": "^5.0.1"
   },
   "devDependencies": {
     "@swc/cli": "^0.1.62",
