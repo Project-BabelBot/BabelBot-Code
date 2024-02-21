@@ -5,7 +5,7 @@ import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ActionButtons from "../components/ActionButtons";
 import IconButton from "@mui/material/IconButton";
 import Dialog from "@mui/material/Dialog";
@@ -61,7 +61,7 @@ const styles = {
   },
 };
 
-type Message = {
+export type Message = {
   attachment?: string;
   content: string;
   id: number;
@@ -74,14 +74,33 @@ const ResponsePage = () => {
   const [open, setOpen] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
 
+  useEffect(() => {
+    const latestMessage = messages[messages.length-1]
+    let timeoutId: NodeJS.Timeout | undefined;
+    if(!latestMessage.userIsSender){
+      // If user is not sender, read message via tts
+      readMessage(latestMessage)
+      if(latestMessage.attachment){
+        timeoutId = setTimeout(() => {setOpen(true)}, 1000)
+      }
+    }
+    // TODO: Find out how to set and clear timeout conditionally
+    return () => clearTimeout(timeoutId)
+  }, [messages])
+
   const handleDialogClose = () => {
     setOpen(false);
     setSelectedMessage(null);
   };
 
+  const readMessage = (message: Message) => {
+    // Use tts to read message
+  }
+
   return (
     <Box sx={styles.root}>
-      <Header leftContent={<ActionButtons />} />
+      {/* TODO: Double check if this is how you append something to an array in setState */}
+      <Header leftContent={<ActionButtons setMessages={(newMessage: Message ) => setMessages([...messages, newMessage])} />} />
       <List sx={styles.chatList} component="div">
         {messages.map((o) => {
           return (

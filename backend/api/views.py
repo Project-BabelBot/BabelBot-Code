@@ -25,6 +25,8 @@ from keras.optimizers import SGD
 
 from deep_translator import GoogleTranslator
 
+import speech_recognition as sr
+
 
 @api_view(["GET"])
 def training(request):
@@ -124,27 +126,34 @@ def main(request):
         HttpResponse: A response indicating the outcome of the chatbot interaction.
     """
     lang_voice = {"en": 1, "es": 2, "fr": 3}
-    intents = load_intents() 
+    intents = load_intents()
 
-    try:
-        # Attempt to capture and recognize audio input in English, French, and Spanish
-        English, French, Spanish = capture_and_recognize(request)
+    r = sr.Recognizer()
 
-    except:
-        # Handle invalid audio input
-        details = {"User_Request": " ",
-                   "Chatbot_Response": "Invalid audio input given/no audio input given. Please press the button to speak to BabelBot!"}
-        lang_ISO = "en"
-        res_en2lang = "Invalid audio input given/no audio input given. Please press the button to speak to BabelBot!"
+    # try:
+    #     # Attempt to capture and recognize audio input in English, French, and Spanish
+    #     English, French, Spanish = capture_and_recognize(request)
 
-        speak_response(lang_ISO, res_en2lang, lang_voice)
-        return render(request,"kiosk.html", details)
+    # except:
+    #     # Handle invalid audio input
+    #     details = {"User_Request": " ",
+    #                "Chatbot_Response": "Invalid audio input given/no audio input given. Please press the button to speak to BabelBot!"}
+    #     lang_ISO = "en"
+    #     res_en2lang = "Invalid audio input given/no audio input given. Please press the button to speak to BabelBot!"
+
+    #     speak_response(lang_ISO, res_en2lang, lang_voice)
+    #     return render(request,"kiosk.html", details)
+
+    # TODO: Find out how to get audio file from body of request
+    text_en = r.recognize_google(request, language="en-US")
+    text_fr = r.recognize_google(request, language="fr-FR")
+    text_es = r.recognize_google(request, language="es-AR")
     
     # Detect possible languages from the captured audio
-    possible_langs = lang_detect(English, French, Spanish)
+    possible_langs = lang_detect(text_en, text_fr, text_es)
     lang_list, prob_list = lang_prob(possible_langs)
     lang_ISO = ISO_639(lang_list, prob_list)
-    lang_map = {"en": English, "es": Spanish, "fr": French}
+    lang_map = {"en": text_en, "es": text_es, "fr": text_fr}
 
     try:
         if lang_ISO in lang_map:

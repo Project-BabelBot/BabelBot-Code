@@ -5,8 +5,11 @@ import MicOffIcon from '@mui/icons-material/MicOff';
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import { useEffect, useState } from "react";
-import { Message } from "../pages/ResponsePage";
 import AudioRecorder from "./AudioRecorder";
+import axios from "axios"
+import { Message } from "../pages/ResponsePage";
+import { RestartAlt } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 const styles = {
   activeButton: {
@@ -19,15 +22,17 @@ const styles = {
 };
 
 type ActionButtonProps = {
-  setMessages: () => void;
+  setMessages?: (newMessage: Message) => void;
 }
 
-const ActionButtons = ({}) => {
+const ActionButtons = ({ setMessages }: ActionButtonProps) => {
   const [audioStream, setAudioStream] = useState<MediaStream | null>(null);
   const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
   
   const [micActive, setMicActive] = useState(false);
   const [keyboardActive, setKeyboardActive] = useState(false);
+
+  const navigate = useNavigate()
 
   const startRecording = async (): Promise<void> => {
     try {
@@ -46,9 +51,20 @@ const ActionButtons = ({}) => {
     }
   };
 
-  const stopRecording = (): void => {
+  const stopRecording = async (): Promise<void> => {
     if (audioStream) {
       audioStream.getTracks().forEach((track: MediaStreamTrack) => track.stop());
+    }
+    // TODO: Fix typing of request and response
+
+    // Send request and await response
+    const res = await axios.get("localhost:5000")
+    // Check if response is valid, if so set messages and navigate to response page, if not display an error (how?)
+    if(setMessages){
+      setMessages(res.data);
+    }
+    else{
+      navigate("/response");
     }
   };
 
