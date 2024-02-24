@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 type actionButtonState = {
   keyboardState: boolean;
@@ -6,28 +6,24 @@ type actionButtonState = {
 };
 
 const initialState: actionButtonState = {
-  keyboardState:false,
-    micState:false
+  keyboardState: false,
+  micState: false,
 };
 
 export const actionButtonSlice = createSlice({
   name: "actionbuttons",
   initialState,
-  reducers:{
-    setKeyboardActive: (state) => {
-      state.keyboardState = true;
-      state.micState = false;
+  reducers: {
+    setKeyboardActive: (state, action: PayloadAction<boolean>) => {
+      state.keyboardState = action.payload;
+      //state.micState = !action.payload;
     },
-    setMicActive: (state) => {
-      state.micState = true;
-      state.keyboardState = false;
+    setMicActive: (state, action: PayloadAction<boolean>) => {
+      state.micState = action.payload;
+      //state.keyboardState = !action.payload;
     },
   },
 });
 
-export const {
-  setKeyboardActive,
-  setMicActive,
-} = actionButtonSlice.actions;
-
+export const { setKeyboardActive, setMicActive } = actionButtonSlice.actions;
 export default actionButtonSlice.reducer;

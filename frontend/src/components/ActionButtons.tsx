@@ -2,9 +2,12 @@ import KeyboardIcon from "@mui/icons-material/Keyboard";
 import MicIcon from "@mui/icons-material/Mic";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
-import { ChangeEvent, useRef, useState } from "react";
-import VirtualKeyboard from "./VirtualKeyboard";
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from "react-redux";
+import {
+  setKeyboardActive,
+  setMicActive,
+} from "../state/slices/actionButtonSlice";
+import { useAppSelector } from "../state/hooks";
 
 const styles = {
   activeButton: {
@@ -17,58 +20,58 @@ const styles = {
 };
 
 const ActionButtons = () => {
-  const [micActive, setMicActive] = useState(false);
-  const [keyboardActive, setKeyboardActive] = useState(false);
+  const dispatch = useDispatch();
+
+  const { micState, keyboardState } = useAppSelector(
+    (state) => state.actionbutton
+  );
 
   const onMicClick = () => {
-    if (micActive) {
+    if (micState) {
       // Process audio
-      setMicActive(false);
+      dispatch(setMicActive(false));
     } else {
-      setMicActive(true);
-      setKeyboardActive(false);
+      dispatch(setMicActive(true));
+      dispatch(setKeyboardActive(false));
       // Record audio
     }
   };
 
   const onKeyboardClick = () => {
-    if (keyboardActive) {
+    if (keyboardState) {
       // Close keyboard
-      setKeyboardActive(false);
+      dispatch(setKeyboardActive(false));
     } else {
-      setMicActive(false);
-      setKeyboardActive(true);
+      dispatch(setMicActive(false));
+      dispatch(setKeyboardActive(true));
       // Display keyboard
     }
   };
 
-  const [input, setInput] = useState("");
-  const keyboard = useRef<any>(null);
+  // const [input, setInput] = useState("");
+  // const keyboard = useRef<any>(null);
 
-  const onChangeInput = (event: ChangeEvent<HTMLInputElement>): void => {
-    const input = event.target.value;
-    setInput(input);
-    keyboard.current!.setInput(input);
-  };
+  // const onChangeInput = (event: ChangeEvent<HTMLInputElement>): void => {
+  //   const input = event.target.value;
+  //   setInput(input);
+  //   keyboard.current!.setInput(input);
+  // };
 
   return (
     // TODO: Fix Theming
     <Box sx={styles.root}>
       <IconButton
         onClick={onMicClick}
-        sx={micActive ? styles.activeButton : styles.inactiveButton}
+        sx={micState ? styles.activeButton : styles.inactiveButton}
       >
         <MicIcon fontSize="large" />
       </IconButton>
       <IconButton
         onClick={onKeyboardClick}
-        sx={keyboardActive ? styles.activeButton : styles.inactiveButton}
+        sx={keyboardState ? styles.activeButton : styles.inactiveButton}
       >
         <KeyboardIcon fontSize="large" />
       </IconButton>
-      {keyboardActive ? (
-        <VirtualKeyboard keyboardRef={keyboard} onChange={setInput} />
-      ) : null}
     </Box>
   );
 };
