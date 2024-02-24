@@ -1,14 +1,12 @@
 import KeyboardIcon from "@mui/icons-material/Keyboard";
-import KeyboardHideIcon from '@mui/icons-material/KeyboardHide';
+import KeyboardHideIcon from "@mui/icons-material/KeyboardHide";
 import MicIcon from "@mui/icons-material/Mic";
-import MicOffIcon from '@mui/icons-material/MicOff';
+import MicOffIcon from "@mui/icons-material/MicOff";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import { useEffect, useState } from "react";
-import AudioRecorder from "./AudioRecorder";
-import axios from "axios"
+import axios from "axios";
 import { Message } from "../pages/ResponsePage";
-import { RestartAlt } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
 const styles = {
@@ -23,21 +21,23 @@ const styles = {
 
 type ActionButtonProps = {
   setMessages?: (newMessage: Message) => void;
-}
+};
 
 const ActionButtons = ({ setMessages }: ActionButtonProps) => {
   const [audioStream, setAudioStream] = useState<MediaStream | null>(null);
   const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
-  
+
   const [micActive, setMicActive] = useState(false);
   const [keyboardActive, setKeyboardActive] = useState(false);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const startRecording = async (): Promise<void> => {
     try {
       setAudioChunks([]);
-      const stream: MediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const stream: MediaStream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+      });
       setAudioStream(stream);
 
       const mediaRecorder: MediaRecorder = new MediaRecorder(stream);
@@ -47,23 +47,22 @@ const ActionButtons = ({ setMessages }: ActionButtonProps) => {
 
       mediaRecorder.start();
     } catch (error) {
-      console.error('Error accessing microphone:', error);
+      console.error("Error accessing microphone:", error);
     }
   };
 
   const stopRecording = async (): Promise<void> => {
     if (audioStream) {
-      audioStream.getTracks().forEach((track: MediaStreamTrack) => track.stop());
+      audioStream
+        .getTracks()
+        .forEach((track: MediaStreamTrack) => track.stop());
     }
-    // TODO: Fix typing of request and response
-
     // Send request and await response
-    const res = await axios.get("localhost:5000")
+    const res = await axios.post("localhost:5000", audioChunks);
     // Check if response is valid, if so set messages and navigate to response page, if not display an error (how?)
-    if(setMessages){
+    if (setMessages) {
       setMessages(res.data);
-    }
-    else{
+    } else {
       navigate("/response");
     }
   };
@@ -72,7 +71,9 @@ const ActionButtons = ({ setMessages }: ActionButtonProps) => {
     return () => {
       // Clean up on unmount
       if (audioStream) {
-        audioStream.getTracks().forEach((track: MediaStreamTrack) => track.stop());
+        audioStream
+          .getTracks()
+          .forEach((track: MediaStreamTrack) => track.stop());
       }
     };
   }, [audioStream]);
@@ -107,15 +108,30 @@ const ActionButtons = ({ setMessages }: ActionButtonProps) => {
         onClick={onMicClick}
         sx={micActive ? styles.activeButton : styles.inactiveButton}
       >
-        {micActive ? <MicIcon fontSize="large" /> : <MicOffIcon fontSize="large"/>}
+        {micActive ? (
+          <MicIcon fontSize="large" />
+        ) : (
+          <MicOffIcon fontSize="large" />
+        )}
       </IconButton>
       <IconButton
         onClick={onKeyboardClick}
         sx={keyboardActive ? styles.activeButton : styles.inactiveButton}
       >
-        {keyboardActive ? <KeyboardHideIcon fontSize="large"/>: <KeyboardIcon fontSize="large" />}
+        {keyboardActive ? (
+          <KeyboardHideIcon fontSize="large" />
+        ) : (
+          <KeyboardIcon fontSize="large" />
+        )}
       </IconButton>
-      <audio controls src={audioChunks.length > 0 ? URL.createObjectURL(new Blob(audioChunks)) : undefined} />
+      <audio
+        controls
+        src={
+          audioChunks.length > 0
+            ? URL.createObjectURL(new Blob(audioChunks))
+            : undefined
+        }
+      />
     </Box>
   );
 };

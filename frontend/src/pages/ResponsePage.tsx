@@ -75,18 +75,20 @@ const ResponsePage = () => {
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
 
   useEffect(() => {
-    const latestMessage = messages[messages.length-1]
+    const latestMessage = messages[messages.length - 1];
     let timeoutId: NodeJS.Timeout | undefined;
-    if(!latestMessage.userIsSender){
+    if (!latestMessage.userIsSender) {
       // If user is not sender, read message via tts
-      readMessage(latestMessage)
-      if(latestMessage.attachment){
-        timeoutId = setTimeout(() => {setOpen(true)}, 1000)
+      readMessage(latestMessage);
+      if (latestMessage.attachment) {
+        timeoutId = setTimeout(() => {
+          setOpen(true);
+        }, 1000);
       }
     }
-    // TODO: Find out how to set and clear timeout conditionally
-    return () => clearTimeout(timeoutId)
-  }, [messages])
+
+    return () => clearTimeout(timeoutId);
+  }, [messages]);
 
   const handleDialogClose = () => {
     setOpen(false);
@@ -95,12 +97,19 @@ const ResponsePage = () => {
 
   const readMessage = (message: Message) => {
     // Use tts to read message
-  }
+  };
 
   return (
     <Box sx={styles.root}>
-      {/* TODO: Double check if this is how you append something to an array in setState */}
-      <Header leftContent={<ActionButtons setMessages={(newMessage: Message ) => setMessages([...messages, newMessage])} />} />
+      <Header
+        leftContent={
+          <ActionButtons
+            setMessages={(newMessage: Message) =>
+              setMessages([...messages, newMessage])
+            }
+          />
+        }
+      />
       <List sx={styles.chatList} component="div">
         {messages.map((o) => {
           return (
