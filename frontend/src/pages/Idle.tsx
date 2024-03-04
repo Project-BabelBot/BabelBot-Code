@@ -1,3 +1,4 @@
+import TouchAppIcon from "@mui/icons-material/TouchApp";
 import { Box, Button, Typography } from "@mui/material";
 import logo from "../assets/logo.png";
 import Header from "../components/Header";
@@ -19,6 +20,7 @@ const styles = {
   buttonContainer: {
     flex: "0 0 200px",
   },
+  buttonContent: { display: "flex", gap: 1 },
   header: {
     display: "flex",
     justifyContent: "space-between",
@@ -26,6 +28,7 @@ const styles = {
     paddingTop: 1,
     paddingX: 1,
   },
+  icon: { fontSize: "3rem" },
   logo: {
     aspectRatio: "1/1",
     width: 100,
@@ -69,7 +72,10 @@ const Idle = () => {
           sx={styles.button}
           variant="contained"
         >
-          <Typography variant="h3">Touch to Start</Typography>
+          <Box sx={styles.buttonContent}>
+            <TouchAppIcon sx={styles.icon} />
+            <Typography variant="h3">Touch to Start</Typography>
+          </Box>
         </Button>
       </Box>
     </Box>
