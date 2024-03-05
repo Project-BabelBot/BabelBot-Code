@@ -112,7 +112,7 @@ def training(request):
     return HttpResponse("Created words.pkl.<br>Created classes.pkl.<br>Saved NLP Model (chatbotmodel.h5).<br>Training of the NLP Model Completed!")
 
 
-@api_view(["GET"])
+@api_view(["POST"])
 def main(request):
     """
     Main - handling audio input, language detection, translation, and interaction with a chatbot.
