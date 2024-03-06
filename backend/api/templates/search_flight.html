@@ -1,0 +1,11 @@
+<!-- search_flight.html -->
+<form method="post" action="{% url 'search_flight' %}">
+    {% csrf_token %}
+    {{ form.query.label_tag }}
+    {{ form.query }}
+
+    {{ form.city.label_tag }}
+    {{ form.city }}
+
+    <input type="submit" value="Search">
+</form>
