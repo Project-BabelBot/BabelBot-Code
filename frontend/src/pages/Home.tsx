@@ -4,7 +4,6 @@ import Header from "../components/Header";
 import ActionButtons from "../components/ActionButtons";
 import VirtualKeyboard from "../components/VirtualKeyboard";
 import { useAppSelector } from "../state/hooks";
-import { useState, useRef, ChangeEvent } from "react";
 
 const styles = {
   avatar: {
@@ -29,15 +28,6 @@ const styles = {
 };
 
 const Home = () => {
-  const [input, setInput] = useState("");
-  const keyboard = useRef<any>(null);
-
-  const onChangeInput = (event: ChangeEvent<HTMLInputElement>): void => {
-    const input = event.target.value;
-    setInput(input);
-    keyboard.current!.setInput(input);
-  };
-
   const { keyboardState } = useAppSelector((state) => state.actionbutton);
 
   return (
@@ -53,7 +43,7 @@ const Home = () => {
       </Box>
       <Box sx = {styles.keyboard} >
         {keyboardState ? (
-          <VirtualKeyboard onChange={setInput} />
+          <VirtualKeyboard />
         ) : null}
       </Box>
     </Box>

@@ -1,10 +1,10 @@
-import React, { FunctionComponent, useState, MutableRefObject } from "react";
+import { FunctionComponent, useState, MutableRefObject } from "react";
 import Keyboard from "react-simple-keyboard";
 import "react-simple-keyboard/build/css/index.css";
 
 interface IProps {
   onChange: (input: string) => void;
-  keyboardRef: MutableRefObject<Keyboard>;
+  keyboardRef: MutableRefObject<typeof Keyboard>;
 }
 
 const KeyboardWrapper: FunctionComponent<IProps> = ({
@@ -25,7 +25,6 @@ const KeyboardWrapper: FunctionComponent<IProps> = ({
       layoutName={layoutName}
       onChange={onChange}
       onKeyPress={onKeyPress}
-      onRender={() => console.log("Rendered")}
     />
   );
 };

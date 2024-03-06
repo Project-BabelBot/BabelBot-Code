@@ -7,8 +7,8 @@ import {
 import ResponsePage from "./pages/ResponsePage";
 import Idle from "./pages/Idle";
 import Home from "./pages/Home";
+import Test from "./pages/Test";
 import "./App.css";
-import Test from "./pages/test";
 
 const App = () => {
   const router = createBrowserRouter(
