@@ -3,6 +3,8 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from django.db.models import Q
+
+from .serializers import FileUploadSerializer
 from .forms import FlightSearchForm
 from .models import Flight
 
@@ -130,6 +132,31 @@ def main(request):
 
     r = sr.Recognizer()
 
+    serializer = FileUploadSerializer(data = request.data)
+
+    if serializer.is_valid():
+            print("serializer valid")
+            
+            serialized_data = serializer.validated_data['file']
+    else:
+        print(serializer)
+        print(serializer.errors)
+        print()
+        serialized_data = None
+
+    print(request.data['file'].size)
+    print(request.data.get('file').size)
+    print("file size", type(request.data['file']))
+
+    # if request.method == 'POST' and request.FILES.get('audio_file'):
+    print("serialized file", serialized_data)
+    print("serialized file type", type(serialized_data))
+    print()
+    
+    test = request.data['file']
+    print("unserialized file", test)
+    print("unserialized file type", type(test))
+    
     # try:
     #     # Attempt to capture and recognize audio input in English, French, and Spanish
     #     English, French, Spanish = capture_and_recognize(request)
@@ -145,9 +172,31 @@ def main(request):
     #     return render(request,"kiosk.html", details)
 
     # TODO: Find out how to get audio file from body of request
-    text_en = r.recognize_google(request, language="en-US")
-    text_fr = r.recognize_google(request, language="fr-FR")
-    text_es = r.recognize_google(request, language="es-AR")
+
+    # file = open("C:/Users/kool-/Documents/Sound recordings/harvard.wav")
+    # print("FILE", file)
+    # test2 = sr.AudioFile("C:/Users/kool-/Documents/Sound recordings/harvard.wav")
+
+    serialized_audio_file = sr.AudioFile(serialized_data)
+    unserialized_audio_file = sr.AudioFile(test)
+
+    print("serialized_audio_file", serialized_audio_file)
+    print()
+    print("unserialized_audio_file", unserialized_audio_file)
+
+    with serialized_audio_file as source1:
+        audio1 = r.record(source1)
+
+    with unserialized_audio_file as source2:
+        audio2 = r.record(source2)
+
+    print("audio1", audio1)
+    print()
+    print("audio2", audio2)
+
+    text_en = r.recognize_google(audio1, language="en-US")
+    text_fr = r.recognize_google(audio1, language="fr-FR")
+    text_es = r.recognize_google(audio1, language="es-AR")
     
     # Detect possible languages from the captured audio
     possible_langs = lang_detect(text_en, text_fr, text_es)
