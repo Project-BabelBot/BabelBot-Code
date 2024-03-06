@@ -16,11 +16,9 @@ export const actionButtonSlice = createSlice({
   reducers: {
     setKeyboardActive: (state, action: PayloadAction<boolean>) => {
       state.keyboardState = action.payload;
-      //state.micState = !action.payload;
     },
     setMicActive: (state, action: PayloadAction<boolean>) => {
       state.micState = action.payload;
-      //state.keyboardState = !action.payload;
     },
   },
 });

@@ -23,6 +23,9 @@ const styles = {
     flexDirection: "column",
     height: "100%",
   },
+  keyboard:{
+    Maxwidth: "850px"
+  },
 };
 
 const Home = () => {
@@ -48,9 +51,9 @@ const Home = () => {
           sx={styles.avatar}
         />
       </Box>
-      <Box>
+      <Box sx = {styles.keyboard} >
         {keyboardState ? (
-          <VirtualKeyboard keyboardRef={keyboard} onChange={setInput} />
+          <VirtualKeyboard onChange={setInput} />
         ) : null}
       </Box>
     </Box>
