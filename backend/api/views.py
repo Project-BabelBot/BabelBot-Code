@@ -28,6 +28,9 @@ from keras.optimizers import SGD
 from deep_translator import GoogleTranslator
 
 import speech_recognition as sr
+from pydub import AudioSegment
+from io import BytesIO
+from tempfile import TemporaryFile
 
 
 @api_view(["GET"])
@@ -144,9 +147,7 @@ def main(request):
         print()
         serialized_data = None
 
-    print(request.data['file'].size)
-    print(request.data.get('file').size)
-    print("file size", type(request.data['file']))
+    print(request.data)
 
     # if request.method == 'POST' and request.FILES.get('audio_file'):
     print("serialized file", serialized_data)
@@ -177,6 +178,11 @@ def main(request):
     # print("FILE", file)
     # test2 = sr.AudioFile("C:/Users/kool-/Documents/Sound recordings/harvard.wav")
 
+    file_header = test.read(10)
+    print("------------------")
+    print(file_header)
+    print(file_header == b'RIFF')
+
     serialized_audio_file = sr.AudioFile(serialized_data)
     unserialized_audio_file = sr.AudioFile(test)
 
@@ -184,19 +190,30 @@ def main(request):
     print()
     print("unserialized_audio_file", unserialized_audio_file)
 
-    with serialized_audio_file as source1:
-        audio1 = r.record(source1)
+    # with serialized_audio_file as source1:
+    #     audio1 = r.record(source1)
 
-    with unserialized_audio_file as source2:
+    testing = test.read()
+
+    with TemporaryFile(suffix='.wav', dir='./') as f:
+        f.write(test.read())
+        print(f.name)
+
+        converted = AudioSegment.from_file(f.name, fromat="wav")
+        converted_audio = converted.set_channels(1).set_frame_rate(16000)
+
+    with converted_audio as source2:
         audio2 = r.record(source2)
 
-    print("audio1", audio1)
+    # print("audio1", audio1)
     print()
     print("audio2", audio2)
 
-    text_en = r.recognize_google(audio1, language="en-US")
-    text_fr = r.recognize_google(audio1, language="fr-FR")
-    text_es = r.recognize_google(audio1, language="es-AR")
+    
+
+    text_en = r.recognize_google(audio2, language="en-US")
+    text_fr = r.recognize_google(audio2, language="fr-FR")
+    text_es = r.recognize_google(audio2, language="es-AR")
     
     # Detect possible languages from the captured audio
     possible_langs = lang_detect(text_en, text_fr, text_es)

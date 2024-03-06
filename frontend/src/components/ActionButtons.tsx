@@ -59,30 +59,28 @@ const ActionButtons = ({ setMessages }: ActionButtonProps) => {
     // }
 
     audioChunksRef.current = [];
+    // audioStreamRef.current = await navigator.mediaDevices.getUserMedia({
+    //   audio: true,
+    // });
 
-    await register(await connect());
-    audioStreamRef.current = await navigator.mediaDevices.getUserMedia({
-      audio: true,
-    });
+    if (mediaRecorderRef.current) {
+      // mediaRecorderRef.current.ondataavailable = (e: BlobEvent) => {
+      //   audioChunksRef.current.push(e.data);
+      // };
 
-    const mimeTypes = ["audio/wav"].filter((type) =>
-      MediaRecorder.isTypeSupported(type)
-    );
+      audioStreamRef.current = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+      });
 
-    if (mimeTypes.length === 0) {
-      return alert("Browser not supported");
-    }
-
-    if (!mediaRecorderRef.current) {
       mediaRecorderRef.current = new MediaRecorder(audioStreamRef.current, {
         mimeType: "audio/wav",
       }) as MediaRecorder;
       mediaRecorderRef.current.ondataavailable = (e: BlobEvent) => {
         audioChunksRef.current.push(e.data);
       };
+      mediaRecorderRef.current.start();
     }
 
-    mediaRecorderRef.current.start();
     console.log("START RECORDING:", audioChunksRef.current);
   };
 
@@ -92,46 +90,64 @@ const ActionButtons = ({ setMessages }: ActionButtonProps) => {
         .getTracks()
         .forEach((track: MediaStreamTrack) => track.stop());
     }
-    console.log(mediaRecorderRef.current);
-    if (mediaRecorderRef.current) {
-      console.log("Stopping media recorder");
-      mediaRecorderRef.current.stop();
-      mediaRecorderRef.current = null;
-    }
-    console.log("STOP RECORDING", audioChunksRef.current);
-    const audioBlob = new Blob(audioChunksRef.current, {
-      type: "audio/wav",
-    });
-    console.log("audioBlob", audioBlob);
-    const audioFile = new File([audioBlob], "recording.wav", {
-      type: "audio/wav",
-    });
-    console.log("audioFile", audioFile);
     const formData = new FormData();
-    formData.append("file", audioFile, "recording.wav");
-    for (const value of formData.values()) {
-      console.log(value);
-    }
-    try {
-      // Send request and await response
-      const res = await axios.post("http://localhost:8000/api/", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      // Check if response is valid, if so set messages and navigate to response page, if not display an error (how?)
-      console.log(res.data);
-      if (setMessages) {
-        setMessages(res.data);
-      } else {
-        navigate("/response");
-      }
-    } catch (error) {
-      console.log("API ERROR");
+    if (mediaRecorderRef.current) {
+      mediaRecorderRef.current.onstop = async () => {
+        console.log("STOP RECORDING", audioChunksRef.current);
+        const audioBlob = new Blob(audioChunksRef.current, {
+          type: "audio/wav",
+        });
+        console.log(audioChunksRef.current);
+        console.log("audioBlob", audioBlob);
+        const audioFile = new File([audioBlob], "recording.wav", {
+          type: "audio/wav",
+        });
+        console.log("audioFile", audioFile);
+        formData.append("file", audioFile, "recording.wav");
+        try {
+          console.log("formData issss", formData);
+          for (const value of formData.values()) {
+            console.log(value);
+          }
+          // Send request and await response
+          const res = await axios.post("http://localhost:8000/api/", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
+          // Check if response is valid, if so set messages and navigate to response page, if not display an error (how?)
+          console.log(res.data);
+          if (setMessages) {
+            setMessages(res.data);
+          } else {
+            navigate("/response");
+          }
+        } catch (error) {
+          console.log("API ERROR");
+        }
+      };
     }
   };
 
   useEffect(() => {
+    console.log("USEEFFECT");
+    const func = async () => {
+      await register(await connect());
+      audioStreamRef.current = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+      });
+      console.log("audioStreamRef.current", audioStreamRef.current);
+      if (mediaRecorderRef.current == null) {
+        console.log("In useeffect if");
+        mediaRecorderRef.current = new MediaRecorder(audioStreamRef.current, {
+          mimeType: "audio/wav",
+        }) as MediaRecorder;
+        mediaRecorderRef.current.ondataavailable = (e: BlobEvent) => {
+          audioChunksRef.current.push(e.data);
+        };
+      }
+    };
+    func();
     return () => {
       // Clean up on unmount
       if (audioStreamRef.current) {
