@@ -77,9 +77,11 @@ import { Box, TextField } from "@mui/material";
 
 const VirtualKeyboard: FunctionComponent = () => {
   const [input, setInput] = useState("");
-  const keyboard = useRef<any>(null);
+  const keyboard = useRef(null);
 
-  const onChangeInput = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
+  const onChangeInput = (
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ): void => {
     const input = event.target.value;
     setInput(input);
     keyboard.current.setInput(input);
@@ -91,7 +93,7 @@ const VirtualKeyboard: FunctionComponent = () => {
         fullWidth
         value={input}
         placeholder={"Tap on the virtual keyboard to start"}
-        onChange={e => onChangeInput(e)}
+        onChange={(e) => onChangeInput(e)}
       />
       <KeyboardWrapper keyboardRef={keyboard} onChange={setInput} />
     </Box>
