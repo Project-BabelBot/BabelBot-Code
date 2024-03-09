@@ -63,7 +63,7 @@ const styles = {
   },
 };
 
-type Message = {
+export type Message = {
   attachment?: string;
   content: string;
   id: number;
@@ -72,7 +72,7 @@ type Message = {
 };
 
 const ResponsePage = () => {
-  const [messages, setmessages] = useState(demoMessages);
+  const [messages, setMessages] = useState(demoMessages);
   const [open, setOpen] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
   const { keyboardState } = useAppSelector((state) => state.actionbutton);
