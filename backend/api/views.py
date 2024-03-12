@@ -30,6 +30,7 @@ from deep_translator import GoogleTranslator
 import speech_recognition as sr
 from pydub import AudioSegment
 from io import BytesIO
+import io
 from tempfile import TemporaryFile
 
 
@@ -135,85 +136,49 @@ def main(request):
 
     r = sr.Recognizer()
 
-    serializer = FileUploadSerializer(data = request.data)
+    # serializer = FileUploadSerializer(data = request.data)
 
-    if serializer.is_valid():
-            print("serializer valid")
+    # if serializer.is_valid():
+    #         print("serializer valid")
             
-            serialized_data = serializer.validated_data['file']
-    else:
-        print(serializer)
-        print(serializer.errors)
-        print()
-        serialized_data = None
+    #         serialized_data = serializer.validated_data['file']
+    # else:
+    #     print(serializer)
+    #     print(serializer.errors)
+    #     print()
+    #     serialized_data = None
+    
+    data = request.data['file']
 
-    print(request.data)
+    # file_header = data.read(100)
+    # print(file_header)
+    # print()
 
-    # if request.method == 'POST' and request.FILES.get('audio_file'):
-    print("serialized file", serialized_data)
-    print("serialized file type", type(serialized_data))
+    print(data)
     print()
     
-    test = request.data['file']
-    print("unserialized file", test)
-    print("unserialized file type", type(test))
-    
-    # try:
-    #     # Attempt to capture and recognize audio input in English, French, and Spanish
-    #     English, French, Spanish = capture_and_recognize(request)
 
-    # except:
-    #     # Handle invalid audio input
-    #     details = {"User_Request": " ",
-    #                "Chatbot_Response": "Invalid audio input given/no audio input given. Please press the button to speak to BabelBot!"}
-    #     lang_ISO = "en"
-    #     res_en2lang = "Invalid audio input given/no audio input given. Please press the button to speak to BabelBot!"
+    read_data = data.read()
+    print(read_data)
 
-    #     speak_response(lang_ISO, res_en2lang, lang_voice)
-    #     return render(request,"kiosk.html", details)
+    # audio_segment = AudioSegment(data=read_data)
+    # pcm_wav_audio = audio_segment.set_channels(1).set_frame_rate(16000)
 
-    # TODO: Find out how to get audio file from body of request
+    with BytesIO(read_data) as f:
+        audio_segment = AudioSegment.from_file(f, format='wav')
+        pcm_wav_audio = audio_segment.set_channels(1).set_frame_rate(16000)
 
-    # file = open("C:/Users/kool-/Documents/Sound recordings/harvard.wav")
-    # print("FILE", file)
-    # test2 = sr.AudioFile("C:/Users/kool-/Documents/Sound recordings/harvard.wav")
+    with sr.AudioFile(BytesIO(read_data)) as source:
+            audio = r.record(source)
 
-    file_header = test.read(10)
-    print("------------------")
-    print(file_header)
-    print(file_header == b'RIFF')
-
-    serialized_audio_file = sr.AudioFile(serialized_data)
-    unserialized_audio_file = sr.AudioFile(test)
-
-    print("serialized_audio_file", serialized_audio_file)
     print()
-    print("unserialized_audio_file", unserialized_audio_file)
+    print("audio", audio)
 
-    # with serialized_audio_file as source1:
-    #     audio1 = r.record(source1)
+    text_en = r.recognize_google(audio, language="en-US")
+    text_fr = r.recognize_google(audio, language="fr-FR")
+    text_es = r.recognize_google(audio, language="es-AR")
 
-    testing = test.read()
-
-    with TemporaryFile(suffix='.wav', dir='./') as f:
-        f.write(test.read())
-        print(f.name)
-
-        converted = AudioSegment.from_file(f.name, fromat="wav")
-        converted_audio = converted.set_channels(1).set_frame_rate(16000)
-
-    with converted_audio as source2:
-        audio2 = r.record(source2)
-
-    # print("audio1", audio1)
-    print()
-    print("audio2", audio2)
-
-    
-
-    text_en = r.recognize_google(audio2, language="en-US")
-    text_fr = r.recognize_google(audio2, language="fr-FR")
-    text_es = r.recognize_google(audio2, language="es-AR")
+    print("PAST AUDIO STUFF")
     
     # Detect possible languages from the captured audio
     possible_langs = lang_detect(text_en, text_fr, text_es)
