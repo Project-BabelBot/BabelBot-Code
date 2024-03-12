@@ -4,7 +4,6 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from django.db.models import Q
 
-from .serializers import FileUploadSerializer
 from .forms import FlightSearchForm
 from .models import Flight
 
@@ -28,10 +27,7 @@ from keras.optimizers import SGD
 from deep_translator import GoogleTranslator
 
 import speech_recognition as sr
-from pydub import AudioSegment
 from io import BytesIO
-import io
-from tempfile import TemporaryFile
 
 
 @api_view(["GET"])
@@ -135,44 +131,12 @@ def main(request):
     intents = load_intents()
 
     r = sr.Recognizer()
-
-    # serializer = FileUploadSerializer(data = request.data)
-
-    # if serializer.is_valid():
-    #         print("serializer valid")
-            
-    #         serialized_data = serializer.validated_data['file']
-    # else:
-    #     print(serializer)
-    #     print(serializer.errors)
-    #     print()
-    #     serialized_data = None
     
     data = request.data['file']
-
-    # file_header = data.read(100)
-    # print(file_header)
-    # print()
-
-    print(data)
-    print()
-    
-
     read_data = data.read()
-    print(read_data)
-
-    # audio_segment = AudioSegment(data=read_data)
-    # pcm_wav_audio = audio_segment.set_channels(1).set_frame_rate(16000)
-
-    with BytesIO(read_data) as f:
-        audio_segment = AudioSegment.from_file(f, format='wav')
-        pcm_wav_audio = audio_segment.set_channels(1).set_frame_rate(16000)
 
     with sr.AudioFile(BytesIO(read_data)) as source:
             audio = r.record(source)
-
-    print()
-    print("audio", audio)
 
     text_en = r.recognize_google(audio, language="en-US")
     text_fr = r.recognize_google(audio, language="fr-FR")
