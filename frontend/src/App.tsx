@@ -14,11 +14,10 @@ import { connect } from "extendable-media-recorder-wav-encoder";
 
 const App = () => {
   useEffect(() => {
-    const func = async () => {
+    // Needed to run (only) once for extendable-media-recorder
+    (async () => {
       await register(await connect());
-    };
-    func();
-    console.log("APP USEEFFECT, func ran");
+    })();
   }, []);
 
   const router = createBrowserRouter(
