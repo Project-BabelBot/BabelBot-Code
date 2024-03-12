@@ -1,5 +1,4 @@
-import { MediaRecorder, register } from "extendable-media-recorder";
-import { connect } from "extendable-media-recorder-wav-encoder";
+import { MediaRecorder } from "extendable-media-recorder";
 import KeyboardIcon from "@mui/icons-material/Keyboard";
 import KeyboardHideIcon from "@mui/icons-material/KeyboardHide";
 import MicIcon from "@mui/icons-material/Mic";
@@ -132,7 +131,6 @@ const ActionButtons = ({ setMessages }: ActionButtonProps) => {
   useEffect(() => {
     console.log("USEEFFECT");
     const func = async () => {
-      await register(await connect());
       audioStreamRef.current = await navigator.mediaDevices.getUserMedia({
         audio: true,
       });
