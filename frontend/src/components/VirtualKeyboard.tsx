@@ -2,7 +2,9 @@ import { FunctionComponent, useState, useRef, ChangeEvent } from "react";
 import KeyboardWrapper from "../components/KeyboardWrapper";
 import { Box, TextField } from "@mui/material";
 
-const VirtualKeyboard: FunctionComponent = () => {
+type VirtualKeyboardProps = { handleEnter: (button: string) => void };
+
+const VirtualKeyboard = ({ handleEnter }: VirtualKeyboardProps) => {
   const [input, setInput] = useState("");
   const keyboard = useRef(null);
 
@@ -14,15 +16,21 @@ const VirtualKeyboard: FunctionComponent = () => {
     keyboard.current.setInput(input);
   };
 
+  // const [button, setButton] = useState("");
+
   return (
     <Box>
-      <TextField
+      {/* <TextField
         fullWidth
         value={input}
         placeholder={"Tap on the virtual keyboard to start"}
         onChange={(e) => onChangeInput(e)}
+      /> */}
+      <KeyboardWrapper
+        keyboardRef={keyboard}
+        onChange={setInput}
+        handleEnter={handleEnter}
       />
-      <KeyboardWrapper keyboardRef={keyboard} onChange={setInput} />
     </Box>
   );
 };

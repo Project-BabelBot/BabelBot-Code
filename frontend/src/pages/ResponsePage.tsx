@@ -15,6 +15,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import Header from "../components/Header";
 import { useAppSelector } from "../state/hooks";
 import VirtualKeyboard from "../components/VirtualKeyboard";
+import { Message } from "../state/slices/messagesSlice";
 
 const styles = {
   // TODO: Fix theming
@@ -61,14 +62,6 @@ const styles = {
     boxSizing: "border-box",
     padding: 1,
   },
-};
-
-export type Message = {
-  attachment?: string;
-  content: string;
-  id: number;
-  timestamp: string;
-  userIsSender: boolean;
 };
 
 const ResponsePage = () => {
@@ -137,7 +130,7 @@ const ResponsePage = () => {
           </DialogContent>
         </Dialog>
       )}
-      <Box>{keyboardState ? <VirtualKeyboard /> : null}</Box>
+      {/* <Box>{keyboardState ? <KeyboardWrapper handleEnter={handleEnter} /> : null}</Box> */}
     </Box>
   );
 };
