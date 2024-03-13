@@ -131,7 +131,6 @@ const ResponsePage = () => {
           </DialogContent>
         </Dialog>
       )}
-      {/* <Box>{keyboardState ? <KeyboardWrapper handleEnter={handleEnter} /> : null}</Box> */}
       {keyboardState ? <KeyboardWrapper /> : null}
     </Box>
   );
