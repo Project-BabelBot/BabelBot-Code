@@ -16,6 +16,7 @@ import Header from "../components/Header";
 import { useAppSelector } from "../state/hooks";
 import VirtualKeyboard from "../components/VirtualKeyboard";
 import { Message } from "../state/slices/messagesSlice";
+import KeyboardWrapper from "../components/KeyboardWrapper";
 
 const styles = {
   // TODO: Fix theming
@@ -131,6 +132,7 @@ const ResponsePage = () => {
         </Dialog>
       )}
       {/* <Box>{keyboardState ? <KeyboardWrapper handleEnter={handleEnter} /> : null}</Box> */}
+      {keyboardState ? <KeyboardWrapper /> : null}
     </Box>
   );
 };

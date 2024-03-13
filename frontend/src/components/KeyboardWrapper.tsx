@@ -1,30 +1,17 @@
 import { Box, TextField } from "@mui/material";
-import {
-  FunctionComponent,
-  useState,
-  MutableRefObject,
-  ChangeEvent,
-  useRef,
-} from "react";
+import { FunctionComponent, useState, ChangeEvent, useRef } from "react";
 import Keyboard from "react-simple-keyboard";
 import "react-simple-keyboard/build/css/index.css";
-import { useAppSelector } from "../state/hooks";
+import { useAppDispatch, useAppSelector } from "../state/hooks";
 
 interface IProps {
   handleEnter: () => void;
-  // setMessages?: (newMessage: Message) => void;
-  // onChange: (input: string) => void;
-  // keyboardRef: MutableRefObject<typeof Keyboard>;
 }
 
-const KeyboardWrapper: FunctionComponent<IProps> = ({
-  // onChange,
-  // keyboardRef,
-  handleEnter,
-  // setMessages,
-}) => {
+const KeyboardWrapper: FunctionComponent<IProps> = ({ handleEnter }) => {
   const [layoutName, setLayoutName] = useState("default");
   const { messagesArray } = useAppSelector((state) => state.messages);
+  const dispatch = useAppDispatch();
 
   const [input, setInput] = useState("");
   const keyboard = useRef(null);
@@ -54,7 +41,6 @@ const KeyboardWrapper: FunctionComponent<IProps> = ({
         onChange={(e) => onChangeInput(e)}
       />
       <Keyboard
-        // keyboardRef={(r) => (keyboardRef.current = r)}
         keyboardRef={(r) => (keyboard.current = r)}
         layoutName={layoutName}
         onChange={setInput}

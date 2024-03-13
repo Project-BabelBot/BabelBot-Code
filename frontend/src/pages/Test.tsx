@@ -27,3 +27,7 @@ const Test: FunctionComponent = () => {
 };
 
 export default Test;
+
+//make a function that takes text
+//convert the text to audio
+//have a button that when pressed can hear the audio

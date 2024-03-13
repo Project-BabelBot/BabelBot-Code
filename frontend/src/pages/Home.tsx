@@ -51,7 +51,6 @@ const Home = () => {
         />
       </Box>
       <Box sx={styles.keyboard}>
-        {/* {keyboardState ? <VirtualKeyboard handleEnter={handleEnter} /> : null} */}
         {keyboardState ? <KeyboardWrapper handleEnter={handleEnter} /> : null}
       </Box>
     </Box>
