@@ -2,7 +2,12 @@ import KeyboardIcon from "@mui/icons-material/Keyboard";
 import MicIcon from "@mui/icons-material/Mic";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
-import { useState } from "react";
+import { useDispatch } from "react-redux";
+import {
+  setKeyboardActive,
+  setMicActive,
+} from "../state/slices/actionButtonSlice";
+import { useAppSelector } from "../state/hooks";
 
 const styles = {
   activeButton: {
@@ -15,28 +20,31 @@ const styles = {
 };
 
 const ActionButtons = () => {
-  const [micActive, setMicActive] = useState(false);
-  const [keyboardActive, setKeyboardActive] = useState(false);
+  const dispatch = useDispatch();
+
+  const { micActive, keyboardActive } = useAppSelector(
+    (state) => state.actionButtons
+  );
 
   const onMicClick = () => {
     if (micActive) {
       // Process audio
-      setMicActive(false);
+      dispatch(setMicActive(false));
     } else {
-      setMicActive(true);
-      setKeyboardActive(false);
       // Record audio
+      dispatch(setMicActive(true));
+      dispatch(setKeyboardActive(false));
     }
   };
 
   const onKeyboardClick = () => {
     if (keyboardActive) {
       // Close keyboard
-      setKeyboardActive(false);
+      dispatch(setKeyboardActive(false));
     } else {
-      setMicActive(false);
-      setKeyboardActive(true);
       // Display keyboard
+      dispatch(setMicActive(false));
+      dispatch(setKeyboardActive(true));
     }
   };
 

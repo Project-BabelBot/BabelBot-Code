@@ -5,7 +5,7 @@ import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ActionButtons from "../components/ActionButtons";
 import IconButton from "@mui/material/IconButton";
 import Dialog from "@mui/material/Dialog";
@@ -13,6 +13,9 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import Header from "../components/Header";
+import { useAppDispatch, useAppSelector } from "../state/hooks";
+import { Message, setMessages } from "../state/slices/messagesSlice";
+import VirtualKeyboard from "../components/VirtualKeyboard";
 
 const styles = {
   // TODO: Fix theming
@@ -61,18 +64,17 @@ const styles = {
   },
 };
 
-type Message = {
-  attachment?: string;
-  content: string;
-  id: number;
-  timestamp: string;
-  userIsSender: boolean;
-};
-
 const ResponsePage = () => {
-  const [messages, setmessages] = useState(demoMessages);
   const [open, setOpen] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
+  const { keyboardActive } = useAppSelector((state) => state.actionButtons);
+  const { messages } = useAppSelector((state) => state.messages);
+
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(setMessages(demoMessages));
+  }, [dispatch]);
 
   const handleDialogClose = () => {
     setOpen(false);
@@ -134,6 +136,7 @@ const ResponsePage = () => {
           </DialogContent>
         </Dialog>
       )}
+      {keyboardActive ? <VirtualKeyboard /> : null}
     </Box>
   );
 };
