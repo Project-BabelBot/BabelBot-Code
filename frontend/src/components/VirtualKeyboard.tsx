@@ -30,7 +30,9 @@ const VirtualKeyboard = ({ handleEnter }: VirtualKeyboardProps) => {
   const onKeyPress = (button: string) => {
     if (button === "{shift}" || button === "{lock}") {
       setLayoutName(layoutName === "default" ? "shift" : "default");
-    } else if (button === "{enter}") {
+    }
+
+    if (button === "{enter}") {
       const newMessageId =
         messages.length > 0 ? messages[messages.length - 1].id + 1 : 0;
       const newMessage = {
