@@ -14,9 +14,8 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import Header from "../components/Header";
 import { useAppSelector } from "../state/hooks";
-import VirtualKeyboard from "../components/VirtualKeyboard";
 import { Message } from "../state/slices/messagesSlice";
-import KeyboardWrapper from "../components/KeyboardWrapper";
+import VirtualKeyboard from "../components/VirtualKeyboard";
 
 const styles = {
   // TODO: Fix theming
@@ -69,7 +68,7 @@ const ResponsePage = () => {
   const [messages, setMessages] = useState(demoMessages);
   const [open, setOpen] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
-  const { keyboardState } = useAppSelector((state) => state.actionbutton);
+  const { keyboardActive } = useAppSelector((state) => state.actionButtons);
 
   const handleDialogClose = () => {
     setOpen(false);
@@ -131,7 +130,7 @@ const ResponsePage = () => {
           </DialogContent>
         </Dialog>
       )}
-      {keyboardState ? <KeyboardWrapper /> : null}
+      {keyboardActive ? <VirtualKeyboard /> : null}
     </Box>
   );
 };

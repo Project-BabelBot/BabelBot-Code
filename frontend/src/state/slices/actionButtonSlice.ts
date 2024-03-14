@@ -1,13 +1,13 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 type actionButtonState = {
-  keyboardState: boolean;
-  micState: boolean;
+  keyboardActive: boolean;
+  micActive: boolean;
 };
 
 const initialState: actionButtonState = {
-  keyboardState: false,
-  micState: false,
+  keyboardActive: false,
+  micActive: false,
 };
 
 export const actionButtonSlice = createSlice({
@@ -15,10 +15,10 @@ export const actionButtonSlice = createSlice({
   initialState,
   reducers: {
     setKeyboardActive: (state, action: PayloadAction<boolean>) => {
-      state.keyboardState = action.payload;
+      state.keyboardActive = action.payload;
     },
     setMicActive: (state, action: PayloadAction<boolean>) => {
-      state.micState = action.payload;
+      state.micActive = action.payload;
     },
   },
 });

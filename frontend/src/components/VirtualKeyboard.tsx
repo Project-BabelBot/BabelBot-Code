@@ -1,34 +1,34 @@
 import { Box, TextField } from "@mui/material";
-import { FunctionComponent, useState, ChangeEvent, useRef } from "react";
-import Keyboard from "react-simple-keyboard";
+import { useState, ChangeEvent, useRef } from "react";
+import Keyboard, { KeyboardReactInterface } from "react-simple-keyboard";
 import "react-simple-keyboard/build/css/index.css";
-import { useAppDispatch, useAppSelector } from "../state/hooks";
+import { useAppDispatch } from "../state/hooks";
 
-interface IProps {
-  handleEnter: () => void;
-}
+type VirtualKeyboardProps = {
+  handleEnter?: () => void;
+};
 
-const KeyboardWrapper: FunctionComponent<IProps> = ({ handleEnter }) => {
+const VirtualKeyboard = ({ handleEnter }: VirtualKeyboardProps) => {
   const [layoutName, setLayoutName] = useState("default");
-  const { messagesArray } = useAppSelector((state) => state.messages);
   const dispatch = useAppDispatch();
 
   const [input, setInput] = useState("");
-  const keyboard = useRef(null);
+  const keyboardRef = useRef<KeyboardReactInterface | null>(null);
 
-  const onChangeInput = (
+  const onChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ): void => {
-    const input = event.target.value;
-    setInput(input);
-    keyboard.current.setInput(input);
+    setInput(event.target.value);
+    if (keyboardRef.current) {
+      keyboardRef.current.setInput(input);
+    }
   };
 
   const onKeyPress = (button: string) => {
     if (button === "{shift}" || button === "{lock}") {
       setLayoutName(layoutName === "default" ? "shift" : "default");
     } else if (button === "{enter}") {
-      handleEnter();
+      handleEnter?.();
     }
   };
 
@@ -37,11 +37,11 @@ const KeyboardWrapper: FunctionComponent<IProps> = ({ handleEnter }) => {
       <TextField
         fullWidth
         value={input}
-        placeholder={"Tap on the virtual keyboard to start"}
-        onChange={(e) => onChangeInput(e)}
+        placeholder={"Type on the keyboard to start"}
+        onChange={(e) => onChange(e)}
       />
       <Keyboard
-        keyboardRef={(r) => (keyboard.current = r)}
+        keyboardRef={(r) => (keyboardRef.current = r)}
         layoutName={layoutName}
         onChange={setInput}
         onKeyPress={onKeyPress}
@@ -50,4 +50,4 @@ const KeyboardWrapper: FunctionComponent<IProps> = ({ handleEnter }) => {
   );
 };
 
-export default KeyboardWrapper;
+export default VirtualKeyboard;

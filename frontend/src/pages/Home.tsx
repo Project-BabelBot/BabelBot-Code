@@ -4,10 +4,7 @@ import Header from "../components/Header";
 import ActionButtons from "../components/ActionButtons";
 import VirtualKeyboard from "../components/VirtualKeyboard";
 import { useAppSelector } from "../state/hooks";
-import { useState } from "react";
-import KeyboardWrapper from "../components/KeyboardWrapper";
 import { useNavigate } from "react-router";
-import { Message } from "./ResponsePage";
 
 const styles = {
   avatar: {
@@ -32,7 +29,7 @@ const styles = {
 };
 
 const Home = () => {
-  const { keyboardState } = useAppSelector((state) => state.actionbutton);
+  const { keyboardActive } = useAppSelector((state) => state.actionButtons);
   const navigate = useNavigate();
 
   const handleEnter = () => {
@@ -51,7 +48,7 @@ const Home = () => {
         />
       </Box>
       <Box sx={styles.keyboard}>
-        {keyboardState ? <KeyboardWrapper handleEnter={handleEnter} /> : null}
+        {keyboardActive ? <VirtualKeyboard handleEnter={handleEnter} /> : null}
       </Box>
     </Box>
   );

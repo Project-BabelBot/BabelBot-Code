@@ -22,12 +22,12 @@ const styles = {
 const ActionButtons = () => {
   const dispatch = useDispatch();
 
-  const { micState, keyboardState } = useAppSelector(
-    (state) => state.actionbutton
+  const { micActive, keyboardActive } = useAppSelector(
+    (state) => state.actionButtons
   );
 
   const onMicClick = () => {
-    if (micState) {
+    if (micActive) {
       // Process audio
       dispatch(setMicActive(false));
     } else {
@@ -38,7 +38,7 @@ const ActionButtons = () => {
   };
 
   const onKeyboardClick = () => {
-    if (keyboardState) {
+    if (keyboardActive) {
       // Close keyboard
       dispatch(setKeyboardActive(false));
     } else {
@@ -62,13 +62,13 @@ const ActionButtons = () => {
     <Box sx={styles.root}>
       <IconButton
         onClick={onMicClick}
-        sx={micState ? styles.activeButton : styles.inactiveButton}
+        sx={micActive ? styles.activeButton : styles.inactiveButton}
       >
         <MicIcon fontSize="large" />
       </IconButton>
       <IconButton
         onClick={onKeyboardClick}
-        sx={keyboardState ? styles.activeButton : styles.inactiveButton}
+        sx={keyboardActive ? styles.activeButton : styles.inactiveButton}
       >
         <KeyboardIcon fontSize="large" />
       </IconButton>
