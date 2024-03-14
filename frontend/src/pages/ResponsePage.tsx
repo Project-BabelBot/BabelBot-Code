@@ -149,15 +149,29 @@ const demoMessages: Message[] = [
   {
     id: 1,
     content:
-      "Lorem ipsum ",
+      "How's it going?",
     userIsSender: true,
     timestamp: new Date(2023, 12, 29, 12, 0, 0).toISOString(),
   },
   {
-    attachment: "Hello",
     id: 2,
     content:
-      "Lorem ipsum ",
+      "Greetings! Welcome to the border security checkpoint. How can I assist you today?",
+    userIsSender: false,
+    timestamp: new Date(2023, 12, 29, 12, 1, 0).toISOString(),
+  },
+  {
+    id: 3,
+    content:
+      "Can you explain the security guidelines?",
+    userIsSender: true,
+    timestamp: new Date(2023, 12, 29, 12, 0, 0).toISOString(),
+  },
+  {
+    attachment: "Map to Security",
+    id: 4,
+    content:
+      "To ensure a secure environment, we have specific protocols in place. Please comply with our officers and guidelines.",
     userIsSender: false,
     timestamp: new Date(2023, 12, 29, 12, 1, 0).toISOString(),
   }
