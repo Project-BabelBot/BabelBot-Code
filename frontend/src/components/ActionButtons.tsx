@@ -14,7 +14,11 @@ const styles = {
   root: { display: "flex", gap: 1 },
 };
 
-const ActionButtons = () => {
+type buttonProps = {
+  handleEnter: () => void;
+}
+
+const ActionButtons = ({handleEnter}:buttonProps) => {
   const [micActive, setMicActive] = useState(false);
   const [keyboardActive, setKeyboardActive] = useState(false);
 
@@ -25,6 +29,7 @@ const ActionButtons = () => {
     } else {
       setMicActive(true);
       setKeyboardActive(false);
+      handleEnter();
       // Record audio
     }
   };
@@ -36,6 +41,7 @@ const ActionButtons = () => {
     } else {
       setMicActive(false);
       setKeyboardActive(true);
+      handleEnter();
       // Display keyboard
     }
   };

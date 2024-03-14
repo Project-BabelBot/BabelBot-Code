@@ -3,6 +3,7 @@ import logo from "../assets/logo.png";
 import Header from "../components/Header";
 import ActionButtons from "../components/ActionButtons";
 import Avatar from "../components/Avatar";
+import { useNavigate } from "react-router-dom";
 
 const styles = {
   avatar: {
@@ -24,9 +25,15 @@ const styles = {
 };
 
 const Home = () => {
+  const navigate = useNavigate();
+
+  const handleEnter = () => {
+    navigate("/response");
+  };
+
   return (
     <Box sx={styles.root}>
-      <Header leftContent={<ActionButtons />} />
+      <Header leftContent={<ActionButtons handleEnter={handleEnter}/>} />
       <Box sx={styles.avatarContainer}>
         {/* <Box
           component="img"

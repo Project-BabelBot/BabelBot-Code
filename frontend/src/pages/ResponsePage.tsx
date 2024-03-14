@@ -13,6 +13,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import Header from "../components/Header";
+import { useNavigate } from "react-router-dom";
 
 const styles = {
   // TODO: Fix theming
@@ -79,9 +80,15 @@ const ResponsePage = () => {
     setSelectedMessage(null);
   };
 
+  const navigate = useNavigate();
+
+  const handleEnter = () => {
+    navigate("/home");
+  };
+
   return (
     <Box sx={styles.root}>
-      <Header leftContent={<ActionButtons />} />
+      <Header leftContent={<ActionButtons handleEnter={handleEnter}/>} />
       <List sx={styles.chatList} component="div">
         {messages.map((o) => {
           return (
@@ -142,7 +149,7 @@ const demoMessages: Message[] = [
   {
     id: 1,
     content:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Nisi quis eleifend quam adipiscing. Ipsum a arcu cursus vitae congue mauris. Nunc sed id semper risus in hendrerit gravida. Cursus euismod quis viverra nibh cras pulvinar mattis. Gravida quis blandit turpis cursus in. Porttitor lacus luctus accumsan tortor posuere ac ut consequat semper. Adipiscing vitae proin sagittis nisl rhoncus mattis rhoncus. Aliquam ut porttitor leo a. Amet mauris commodo quis imperdiet massa tincidunt nunc pulvinar. Pulvinar pellentesque habitant morbi tristique senectus et netus et malesuada.!",
+      "Lorem ipsum ",
     userIsSender: true,
     timestamp: new Date(2023, 12, 29, 12, 0, 0).toISOString(),
   },
@@ -150,107 +157,10 @@ const demoMessages: Message[] = [
     attachment: "Hello",
     id: 2,
     content:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Nisi quis eleifend quam adipiscing. Ipsum a arcu cursus vitae congue mauris. Nunc sed id semper risus in hendrerit gravida. Cursus euismod quis viverra nibh cras pulvinar mattis. Gravida quis blandit turpis cursus in. Porttitor lacus luctus accumsan tortor posuere ac ut consequat semper. Adipiscing vitae proin sagittis nisl rhoncus mattis rhoncus. Aliquam ut porttitor leo a. Amet mauris commodo quis imperdiet massa tincidunt nunc pulvinar. Pulvinar pellentesque habitant morbi tristique senectus et netus et malesuada.!",
+      "Lorem ipsum ",
     userIsSender: false,
     timestamp: new Date(2023, 12, 29, 12, 1, 0).toISOString(),
-  },
-  {
-    id: 3,
-    content: "Hello BabelBot!",
-    userIsSender: true,
-    timestamp: new Date(2023, 12, 29, 12, 0, 0).toISOString(),
-  },
-  {
-    attachment: "Hello",
-    id: 4,
-    content: "Hello user!",
-    userIsSender: false,
-    timestamp: new Date(2023, 12, 29, 12, 1, 0).toISOString(),
-  },
-  {
-    id: 5,
-    content: "Hello BabelBot!",
-    userIsSender: true,
-    timestamp: new Date(2023, 12, 29, 12, 0, 0).toISOString(),
-  },
-  {
-    id: 6,
-    content: "Hello user!",
-    userIsSender: false,
-    timestamp: new Date(2023, 12, 29, 12, 1, 0).toISOString(),
-  },
-  {
-    id: 7,
-    content: "Hello BabelBot!",
-    userIsSender: true,
-    timestamp: new Date(2023, 12, 29, 12, 0, 0).toISOString(),
-  },
-  {
-    id: 8,
-    content: "Hello user!",
-    userIsSender: false,
-    timestamp: new Date(2023, 12, 29, 12, 1, 0).toISOString(),
-  },
-  {
-    id: 9,
-    content: "Hello BabelBot!",
-    userIsSender: true,
-    timestamp: new Date(2023, 12, 29, 12, 0, 0).toISOString(),
-  },
-  {
-    id: 10,
-    content: "Hello user!",
-    userIsSender: false,
-    timestamp: new Date(2023, 12, 29, 12, 1, 0).toISOString(),
-  },
-  {
-    id: 11,
-    content: "Hello BabelBot!",
-    userIsSender: true,
-    timestamp: new Date(2023, 12, 29, 12, 0, 0).toISOString(),
-  },
-  {
-    id: 12,
-    content: "Hello user!",
-    userIsSender: false,
-    timestamp: new Date(2023, 12, 29, 12, 1, 0).toISOString(),
-  },
-  {
-    id: 13,
-    content: "Hello BabelBot!",
-    userIsSender: true,
-    timestamp: new Date(2023, 12, 29, 12, 0, 0).toISOString(),
-  },
-  {
-    id: 14,
-    content: "Hello user!",
-    userIsSender: false,
-    timestamp: new Date(2023, 12, 29, 12, 1, 0).toISOString(),
-  },
-  {
-    id: 15,
-    content: "Hello BabelBot!",
-    userIsSender: true,
-    timestamp: new Date(2023, 12, 29, 12, 0, 0).toISOString(),
-  },
-  {
-    id: 16,
-    content: "Hello user!",
-    userIsSender: false,
-    timestamp: new Date(2023, 12, 29, 12, 1, 0).toISOString(),
-  },
-  {
-    id: 17,
-    content: "Hello BabelBot!",
-    userIsSender: true,
-    timestamp: new Date(2023, 12, 29, 12, 0, 0).toISOString(),
-  },
-  {
-    id: 18,
-    content: "Hello user!",
-    userIsSender: false,
-    timestamp: new Date(2023, 12, 29, 12, 1, 0).toISOString(),
-  },
+  }
 ];
 
 export default ResponsePage;
