@@ -31,9 +31,9 @@ const ActionButtons = () => {
       // Process audio
       dispatch(setMicActive(false));
     } else {
+      // Record audio
       dispatch(setMicActive(true));
       dispatch(setKeyboardActive(false));
-      // Record audio
     }
   };
 
@@ -42,20 +42,11 @@ const ActionButtons = () => {
       // Close keyboard
       dispatch(setKeyboardActive(false));
     } else {
+      // Display keyboard
       dispatch(setMicActive(false));
       dispatch(setKeyboardActive(true));
-      // Display keyboard
     }
   };
-
-  // const [input, setInput] = useState("");
-  // const keyboard = useRef<any>(null);
-
-  // const onChangeInput = (event: ChangeEvent<HTMLInputElement>): void => {
-  //   const input = event.target.value;
-  //   setInput(input);
-  //   keyboard.current!.setInput(input);
-  // };
 
   return (
     // TODO: Fix Theming

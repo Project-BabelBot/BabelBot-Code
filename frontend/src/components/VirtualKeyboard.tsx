@@ -2,7 +2,9 @@ import { Box, TextField } from "@mui/material";
 import { useState, ChangeEvent, useRef } from "react";
 import Keyboard, { KeyboardReactInterface } from "react-simple-keyboard";
 import "react-simple-keyboard/build/css/index.css";
-import { useAppDispatch } from "../state/hooks";
+import { useAppDispatch, useAppSelector } from "../state/hooks";
+import { setKeyboardActive } from "../state/slices/actionButtonSlice";
+import { appendMessage } from "../state/slices/messagesSlice";
 
 type VirtualKeyboardProps = {
   handleEnter?: () => void;
@@ -11,6 +13,7 @@ type VirtualKeyboardProps = {
 const VirtualKeyboard = ({ handleEnter }: VirtualKeyboardProps) => {
   const [layoutName, setLayoutName] = useState("default");
   const dispatch = useAppDispatch();
+  const { messages } = useAppSelector((state) => state.messages);
 
   const [input, setInput] = useState("");
   const keyboardRef = useRef<KeyboardReactInterface | null>(null);
@@ -28,7 +31,17 @@ const VirtualKeyboard = ({ handleEnter }: VirtualKeyboardProps) => {
     if (button === "{shift}" || button === "{lock}") {
       setLayoutName(layoutName === "default" ? "shift" : "default");
     } else if (button === "{enter}") {
+      const newMessageId =
+        messages.length > 0 ? messages[messages.length - 1].id + 1 : 0;
+      const newMessage = {
+        content: input,
+        id: newMessageId,
+        timestamp: new Date().toISOString(),
+        userIsSender: true,
+      };
+      dispatch(appendMessage(newMessage));
       handleEnter?.();
+      dispatch(setKeyboardActive(false));
     }
   };
 
