@@ -32,7 +32,7 @@ const VirtualKeyboard = ({ handleEnter }: VirtualKeyboardProps) => {
       setLayoutName(layoutName === "default" ? "shift" : "default");
     }
 
-    if (button === "{enter}") {
+    if (button === "{enter}" && input.trim() !== "") {
       const newMessageId =
         messages.length > 0 ? messages[messages.length - 1].id + 1 : 0;
       const newMessage = {
@@ -44,6 +44,10 @@ const VirtualKeyboard = ({ handleEnter }: VirtualKeyboardProps) => {
       dispatch(appendMessage(newMessage));
       handleEnter?.();
       dispatch(setKeyboardActive(false));
+    }
+
+    if (input.trim() === "") {
+      setInput("");
     }
   };
 
