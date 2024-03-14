@@ -9,22 +9,25 @@ export type Message = {
 };
 
 type messagesState = {
-  messagesArray: Message[];
+  messages: Message[];
 };
 
 const initialState: messagesState = {
-  messagesArray: [],
+  messages: [],
 };
 
 export const messagesSlice = createSlice({
   name: "messages",
   initialState,
   reducers: {
-    setMessages: (state, action: PayloadAction<Message>) => {
-      state.messagesArray.push({ ...action.payload });
+    appendMessage: (state, action: PayloadAction<Message>) => {
+      state.messages.push({ ...action.payload });
+    },
+    setMessages: (state, action: PayloadAction<Message[]>) => {
+      state.messages = action.payload;
     },
   },
 });
 
-export const { setMessages } = messagesSlice.actions;
+export const { appendMessage, setMessages } = messagesSlice.actions;
 export default messagesSlice.reducer;

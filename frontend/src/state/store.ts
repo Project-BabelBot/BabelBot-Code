@@ -4,7 +4,7 @@ import messagesSlice from "./slices/messagesSlice";
 
 export const store = configureStore({
   reducer: {
-    actionbutton: actionButtonSlice,
+    actionButtons: actionButtonSlice,
     messages: messagesSlice,
   },
 });

@@ -22,53 +22,44 @@ const styles = {
 const ActionButtons = () => {
   const dispatch = useDispatch();
 
-  const { micState, keyboardState } = useAppSelector(
-    (state) => state.actionbutton
+  const { micActive, keyboardActive } = useAppSelector(
+    (state) => state.actionButtons
   );
 
   const onMicClick = () => {
-    if (micState) {
+    if (micActive) {
       // Process audio
       dispatch(setMicActive(false));
     } else {
+      // Record audio
       dispatch(setMicActive(true));
       dispatch(setKeyboardActive(false));
-      // Record audio
     }
   };
 
   const onKeyboardClick = () => {
-    if (keyboardState) {
+    if (keyboardActive) {
       // Close keyboard
       dispatch(setKeyboardActive(false));
     } else {
+      // Display keyboard
       dispatch(setMicActive(false));
       dispatch(setKeyboardActive(true));
-      // Display keyboard
     }
   };
-
-  // const [input, setInput] = useState("");
-  // const keyboard = useRef<any>(null);
-
-  // const onChangeInput = (event: ChangeEvent<HTMLInputElement>): void => {
-  //   const input = event.target.value;
-  //   setInput(input);
-  //   keyboard.current!.setInput(input);
-  // };
 
   return (
     // TODO: Fix Theming
     <Box sx={styles.root}>
       <IconButton
         onClick={onMicClick}
-        sx={micState ? styles.activeButton : styles.inactiveButton}
+        sx={micActive ? styles.activeButton : styles.inactiveButton}
       >
         <MicIcon fontSize="large" />
       </IconButton>
       <IconButton
         onClick={onKeyboardClick}
-        sx={keyboardState ? styles.activeButton : styles.inactiveButton}
+        sx={keyboardActive ? styles.activeButton : styles.inactiveButton}
       >
         <KeyboardIcon fontSize="large" />
       </IconButton>
