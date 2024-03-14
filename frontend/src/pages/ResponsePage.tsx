@@ -103,15 +103,7 @@ const ResponsePage = () => {
 
   return (
     <Box sx={styles.root}>
-      <Header
-        leftContent={
-          <ActionButtons
-            setMessages={(newMessage: Message) =>
-              setMessages([...messages, newMessage])
-            }
-          />
-        }
-      />
+      <Header leftContent={<ActionButtons />} />
       <List sx={styles.chatList} component="div">
         {messages.map((o) => {
           return (

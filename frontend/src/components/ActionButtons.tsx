@@ -5,15 +5,15 @@ import MicIcon from "@mui/icons-material/Mic";
 import MicOffIcon from "@mui/icons-material/MicOff";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
-import { useEffect, useRef, useDispatch } from "react-redux";
 import {
   setKeyboardActive,
   setMicActive,
 } from "../state/slices/actionButtonSlice";
-import { useAppSelector } from "../state/hooks";
+import { useAppDispatch, useAppSelector } from "../state/hooks";
 import axios from "axios";
-import { Message } from "../pages/ResponsePage";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useRef } from "react";
+import { appendMessage } from "../state/slices/messagesSlice";
 
 const styles = {
   activeButton: {
@@ -30,7 +30,7 @@ const ActionButtons = () => {
   const audioChunksRef = useRef<Blob[]>([]);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const { micActive, keyboardActive } = useAppSelector(
     (state) => state.actionButtons
@@ -53,7 +53,7 @@ const ActionButtons = () => {
     mediaRecorderRef.current.start();
   };
 
-  const stopRecording = async (): Promise<void> => {
+  const stopRecording = async (abortSend = false): Promise<void> => {
     const formData = new FormData();
 
     if (audioStreamRef.current) {
@@ -63,7 +63,7 @@ const ActionButtons = () => {
       audioStreamRef.current = null;
     }
 
-    if (mediaRecorderRef.current) {
+    if (mediaRecorderRef.current && !abortSend) {
       mediaRecorderRef.current.onstop = async () => {
         const audioBlob = new Blob(audioChunksRef.current, {
           type: "audio/wav",
@@ -81,11 +81,8 @@ const ActionButtons = () => {
             },
           });
           console.log(res.data);
-          if (setMessages) {
-            setMessages(res.data);
-          } else {
-            navigate("/response");
-          }
+          dispatch(appendMessage(res.data));
+          navigate("/response");
         } catch (error) {
           console.log("API ERROR");
         }
@@ -118,9 +115,9 @@ const ActionButtons = () => {
       stopRecording();
       dispatch(setMicActive(false));
     } else {
-      startRecording();
       dispatch(setMicActive(true));
       dispatch(setKeyboardActive(false));
+      startRecording();
     }
   };
 
@@ -130,6 +127,7 @@ const ActionButtons = () => {
       dispatch(setKeyboardActive(false));
     } else {
       // Display keyboard
+      stopRecording(true);
       dispatch(setMicActive(false));
       dispatch(setKeyboardActive(true));
     }
