@@ -13,6 +13,9 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import Header from "../components/Header";
+import { useAppDispatch, useAppSelector } from "../state/hooks";
+import { Message, setMessages } from "../state/slices/messagesSlice";
+import VirtualKeyboard from "../components/VirtualKeyboard";
 
 const styles = {
   // TODO: Fix theming
@@ -61,18 +64,17 @@ const styles = {
   },
 };
 
-export type Message = {
-  attachment?: string;
-  content: string;
-  id: number;
-  timestamp: string;
-  userIsSender: boolean;
-};
-
 const ResponsePage = () => {
-  const [messages, setMessages] = useState(demoMessages);
   const [open, setOpen] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
+  const { keyboardActive } = useAppSelector((state) => state.actionButtons);
+  const { messages } = useAppSelector((state) => state.messages);
+
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(setMessages(demoMessages));
+  }, [dispatch]);
 
   useEffect(() => {
     const latestMessage = messages[messages.length - 1];
@@ -162,6 +164,7 @@ const ResponsePage = () => {
           </DialogContent>
         </Dialog>
       )}
+      {keyboardActive ? <VirtualKeyboard /> : null}
     </Box>
   );
 };

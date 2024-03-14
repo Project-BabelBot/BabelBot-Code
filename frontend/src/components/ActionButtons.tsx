@@ -5,7 +5,12 @@ import MicIcon from "@mui/icons-material/Mic";
 import MicOffIcon from "@mui/icons-material/MicOff";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useDispatch } from "react-redux";
+import {
+  setKeyboardActive,
+  setMicActive,
+} from "../state/slices/actionButtonSlice";
+import { useAppSelector } from "../state/hooks";
 import axios from "axios";
 import { Message } from "../pages/ResponsePage";
 import { useNavigate } from "react-router-dom";
@@ -20,17 +25,16 @@ const styles = {
   root: { display: "flex", gap: 1 },
 };
 
-type ActionButtonProps = {
-  setMessages?: (newMessage: Message) => void;
-};
-
-const ActionButtons = ({ setMessages }: ActionButtonProps) => {
+const ActionButtons = () => {
   const audioStreamRef = useRef<MediaStream | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
 
-  const [micActive, setMicActive] = useState(false);
-  const [keyboardActive, setKeyboardActive] = useState(false);
+  const dispatch = useDispatch();
+
+  const { micActive, keyboardActive } = useAppSelector(
+    (state) => state.actionButtons
+  );
 
   const navigate = useNavigate();
 
@@ -112,22 +116,22 @@ const ActionButtons = ({ setMessages }: ActionButtonProps) => {
     if (micActive) {
       // Process audio
       stopRecording();
-      setMicActive(false);
+      dispatch(setMicActive(false));
     } else {
-      setMicActive(true);
-      setKeyboardActive(false);
       startRecording();
+      dispatch(setMicActive(true));
+      dispatch(setKeyboardActive(false));
     }
   };
 
   const onKeyboardClick = () => {
     if (keyboardActive) {
       // Close keyboard
-      setKeyboardActive(false);
+      dispatch(setKeyboardActive(false));
     } else {
-      setMicActive(false);
-      setKeyboardActive(true);
       // Display keyboard
+      dispatch(setMicActive(false));
+      dispatch(setKeyboardActive(true));
     }
   };
 
