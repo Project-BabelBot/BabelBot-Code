@@ -14,7 +14,7 @@ import os
 import pickle
 
 import nltk
-nltk.download("punkt")
+nltk.download("all")
 from nltk.stem import WordNetLemmatizer
 
 import tensorflow as tf
