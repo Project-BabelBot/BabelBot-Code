@@ -81,7 +81,10 @@ const ActionButtons = () => {
             },
           });
           console.log(res.data);
-          dispatch(appendMessage(res.data));
+          const { userQuery } = res.data;
+          const { botResponse } = res.data;
+          dispatch(appendMessage(userQuery));
+          dispatch(appendMessage(botResponse));
           navigate("/response");
         } catch (error) {
           console.log("API ERROR");

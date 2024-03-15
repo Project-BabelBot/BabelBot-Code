@@ -17,6 +17,7 @@ import pickle
 
 import nltk
 nltk.download("punkt")
+nltk.download('wordnet')
 from nltk.stem import WordNetLemmatizer
 
 import tensorflow as tf
@@ -155,6 +156,13 @@ def main(request):
     try:
         if lang_ISO in lang_map:
             message = lang_map[lang_ISO]
+            message_time = datetime.now()
+
+            user_query = {
+                "content": message.capitalize(),
+                "timestamp": message_time,
+                "userIsSender": True,
+            }
            
             # Translate the message to English
             translator_lang2en = GoogleTranslator(source = "auto", target = "en")
@@ -180,10 +188,14 @@ def main(request):
                         "Chatbot_Response": res_en2lang}
             speak_response(lang_ISO, res_en2lang, lang_voice)
             print(res_en2lang)
-            response_data = {
+            bot_response = {
                 "content": res_en2lang,
                 "timestamp": datetime.now(),
                 "userIsSender": False
+            }
+            response_data = {
+                "userQuery": user_query,
+                "botResponse": bot_response
             }
             
             return Response(response_data)
