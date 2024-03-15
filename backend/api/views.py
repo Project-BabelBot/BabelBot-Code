@@ -2,6 +2,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from rest_framework.decorators import api_view
+from rest_framework.response import Response
 from django.db.models import Q
 
 from .forms import FlightSearchForm
@@ -28,6 +29,7 @@ from deep_translator import GoogleTranslator
 
 import speech_recognition as sr
 from io import BytesIO
+from datetime import datetime
 
 
 @api_view(["GET"])
@@ -177,7 +179,14 @@ def main(request):
             details = {"User_Request": message,
                         "Chatbot_Response": res_en2lang}
             speak_response(lang_ISO, res_en2lang, lang_voice)
-            return render(request,"kiosk.html", details)
+            print(res_en2lang)
+            response_data = {
+                "content": res_en2lang,
+                "timestamp": datetime.now(),
+                "userIsSender": False
+            }
+            
+            return Response(response_data)
             
     except ValueError as e:
         print(f"Error: {e}")

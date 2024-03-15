@@ -20,8 +20,13 @@ export const messagesSlice = createSlice({
   name: "messages",
   initialState,
   reducers: {
-    appendMessage: (state, action: PayloadAction<Message>) => {
-      state.messages.push({ ...action.payload });
+    appendMessage: (state, action: PayloadAction<Omit<Message, "id">>) => {
+      const newMessageId =
+        state.messages.length > 0
+          ? state.messages[state.messages.length - 1].id + 1
+          : 0;
+      const newMessage = { id: newMessageId, ...action.payload };
+      state.messages.push(newMessage);
     },
     setMessages: (state, action: PayloadAction<Message[]>) => {
       state.messages = action.payload;

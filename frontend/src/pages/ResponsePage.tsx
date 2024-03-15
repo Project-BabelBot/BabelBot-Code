@@ -77,6 +77,9 @@ const ResponsePage = () => {
   }, [dispatch]);
 
   useEffect(() => {
+    if (messages.length <= 0) {
+      return;
+    }
     const latestMessage = messages[messages.length - 1];
     let timeoutId: NodeJS.Timeout | undefined;
     if (!latestMessage.userIsSender) {
