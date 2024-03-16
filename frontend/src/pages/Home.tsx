@@ -41,12 +41,13 @@ const Home = () => {
     <Box sx={styles.root}>
       <Header leftContent={<ActionButtons />} />
       <Box sx={styles.avatarContainer}>
-        <Box
+        <Avatar />
+        {/* <Box
           component="img"
           alt="BabelBot Logo"
           src={logo}
           sx={styles.avatar}
-        />
+        /> */}
       </Box>
       <Box sx={styles.keyboard}>
         {keyboardActive ? <VirtualKeyboard handleEnter={handleEnter} /> : null}

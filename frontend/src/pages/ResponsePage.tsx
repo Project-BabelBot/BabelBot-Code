@@ -168,115 +168,32 @@ const demoMessages: Message[] = [
   {
     id: 1,
     content:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Nisi quis eleifend quam adipiscing. Ipsum a arcu cursus vitae congue mauris. Nunc sed id semper risus in hendrerit gravida. Cursus euismod quis viverra nibh cras pulvinar mattis. Gravida quis blandit turpis cursus in. Porttitor lacus luctus accumsan tortor posuere ac ut consequat semper. Adipiscing vitae proin sagittis nisl rhoncus mattis rhoncus. Aliquam ut porttitor leo a. Amet mauris commodo quis imperdiet massa tincidunt nunc pulvinar. Pulvinar pellentesque habitant morbi tristique senectus et netus et malesuada.!",
+      "How's it going?",
     userIsSender: true,
     timestamp: new Date(2023, 12, 29, 12, 0, 0).toISOString(),
   },
   {
-    attachment: "Hello",
     id: 2,
     content:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Nisi quis eleifend quam adipiscing. Ipsum a arcu cursus vitae congue mauris. Nunc sed id semper risus in hendrerit gravida. Cursus euismod quis viverra nibh cras pulvinar mattis. Gravida quis blandit turpis cursus in. Porttitor lacus luctus accumsan tortor posuere ac ut consequat semper. Adipiscing vitae proin sagittis nisl rhoncus mattis rhoncus. Aliquam ut porttitor leo a. Amet mauris commodo quis imperdiet massa tincidunt nunc pulvinar. Pulvinar pellentesque habitant morbi tristique senectus et netus et malesuada.!",
+      "Greetings! Welcome to the border security checkpoint. How can I assist you today?",
     userIsSender: false,
     timestamp: new Date(2023, 12, 29, 12, 1, 0).toISOString(),
   },
   {
     id: 3,
-    content: "Hello BabelBot!",
+    content:
+      "Can you explain the security guidelines?",
     userIsSender: true,
     timestamp: new Date(2023, 12, 29, 12, 0, 0).toISOString(),
   },
   {
-    attachment: "Hello",
+    attachment: "Map to Security",
     id: 4,
-    content: "Hello user!",
+    content:
+      "To ensure a secure environment, we have specific protocols in place. Please comply with our officers and guidelines.",
     userIsSender: false,
     timestamp: new Date(2023, 12, 29, 12, 1, 0).toISOString(),
-  },
-  {
-    id: 5,
-    content: "Hello BabelBot!",
-    userIsSender: true,
-    timestamp: new Date(2023, 12, 29, 12, 0, 0).toISOString(),
-  },
-  {
-    id: 6,
-    content: "Hello user!",
-    userIsSender: false,
-    timestamp: new Date(2023, 12, 29, 12, 1, 0).toISOString(),
-  },
-  {
-    id: 7,
-    content: "Hello BabelBot!",
-    userIsSender: true,
-    timestamp: new Date(2023, 12, 29, 12, 0, 0).toISOString(),
-  },
-  {
-    id: 8,
-    content: "Hello user!",
-    userIsSender: false,
-    timestamp: new Date(2023, 12, 29, 12, 1, 0).toISOString(),
-  },
-  {
-    id: 9,
-    content: "Hello BabelBot!",
-    userIsSender: true,
-    timestamp: new Date(2023, 12, 29, 12, 0, 0).toISOString(),
-  },
-  {
-    id: 10,
-    content: "Hello user!",
-    userIsSender: false,
-    timestamp: new Date(2023, 12, 29, 12, 1, 0).toISOString(),
-  },
-  {
-    id: 11,
-    content: "Hello BabelBot!",
-    userIsSender: true,
-    timestamp: new Date(2023, 12, 29, 12, 0, 0).toISOString(),
-  },
-  {
-    id: 12,
-    content: "Hello user!",
-    userIsSender: false,
-    timestamp: new Date(2023, 12, 29, 12, 1, 0).toISOString(),
-  },
-  {
-    id: 13,
-    content: "Hello BabelBot!",
-    userIsSender: true,
-    timestamp: new Date(2023, 12, 29, 12, 0, 0).toISOString(),
-  },
-  {
-    id: 14,
-    content: "Hello user!",
-    userIsSender: false,
-    timestamp: new Date(2023, 12, 29, 12, 1, 0).toISOString(),
-  },
-  {
-    id: 15,
-    content: "Hello BabelBot!",
-    userIsSender: true,
-    timestamp: new Date(2023, 12, 29, 12, 0, 0).toISOString(),
-  },
-  {
-    id: 16,
-    content: "Hello user!",
-    userIsSender: false,
-    timestamp: new Date(2023, 12, 29, 12, 1, 0).toISOString(),
-  },
-  {
-    id: 17,
-    content: "Hello BabelBot!",
-    userIsSender: true,
-    timestamp: new Date(2023, 12, 29, 12, 0, 0).toISOString(),
-  },
-  {
-    id: 18,
-    content: "Hello user!",
-    userIsSender: false,
-    timestamp: new Date(2023, 12, 29, 12, 1, 0).toISOString(),
-  },
+  }
 ];
 
 export default ResponsePage;
