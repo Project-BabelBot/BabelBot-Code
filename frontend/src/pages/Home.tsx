@@ -3,6 +3,7 @@ import logo from "../assets/logo.png";
 import Header from "../components/Header";
 import ActionButtons from "../components/ActionButtons";
 import VirtualKeyboard from "../components/VirtualKeyboard";
+import Avatar from "../components/Avatar";
 import { useAppSelector } from "../state/hooks";
 import { useNavigate } from "react-router";
 
