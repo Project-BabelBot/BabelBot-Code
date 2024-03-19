@@ -203,6 +203,45 @@ def main(request):
     except ValueError as e:
         print(f"Error: {e}")
         return HttpResponse("Could not understand audio. Please press the button again to try again!")
+    
+@api_view(["POST"])
+def text(request):
+    user_input = request.data["textInput"]
+
+    lang_ISO = "en"
+    lang_voice = {"en": 1, "es": 2, "fr": 3}
+    intents = load_intents()
+
+    translator_lang2en = GoogleTranslator(source = "auto", target = "en")
+    lang2en = translator_lang2en.translate(user_input)
+    
+    # Check if the user wants to exit
+    if exit_input(user_input) == 1:
+        details = {"User_Request": user_input,
+                    "Chatbot_Response": "Successfully exited BabelBot!"}
+        lang_ISO = "en"
+        res_en2lang = "Successfully exited BabelBot!"
+        speak_response(lang_ISO, res_en2lang, lang_voice)
+        return render(request,"kiosk.html", details)
+
+    ints = predict_class(lang2en)
+    res = get_response(ints, intents)
+
+    # Translate the response back to the original language
+    translator_en2lang = GoogleTranslator(source = "auto", target = lang_ISO)
+    res_en2lang = translator_en2lang.translate(res)
+
+    details = {"User_Request": user_input,
+                "Chatbot_Response": res_en2lang}
+    speak_response(lang_ISO, res_en2lang, lang_voice)
+    print(res_en2lang)
+    botResponse = {
+        "content": res_en2lang,
+        "timestamp": datetime.now(),
+        "userIsSender": False
+    } 
+    
+    return Response(botResponse)
 
 
 def search_flight(request):
