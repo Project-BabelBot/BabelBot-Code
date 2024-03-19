@@ -10,6 +10,7 @@ colorama==0.4.6
 comtypes==1.2.0
 deep-translator==1.11.4
 Django==4.2.6
+django-cors-headers==4.3.1
 djangorestframework==3.14.0
 et-xmlfile==1.1.0
 flatbuffers==23.5.26

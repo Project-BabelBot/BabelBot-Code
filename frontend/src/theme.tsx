@@ -12,6 +12,17 @@ const palette = createPalette({
   },
 });
 
-const theme = createTheme({ palette: palette });
+const theme = createTheme({ components: {
+  MuiButton: {
+    defaultProps: {
+      disableRipple: true,
+    }
+  },
+  MuiIconButton:{
+    defaultProps: {
+      disableRipple: true,
+    }
+  }
+}, palette: palette });
 
 export default theme;

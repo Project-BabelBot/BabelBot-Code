@@ -2,7 +2,9 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from rest_framework.decorators import api_view
+from rest_framework.response import Response
 from django.db.models import Q
+
 from .forms import FlightSearchForm
 from .models import Flight
 
@@ -15,6 +17,7 @@ import pickle
 
 import nltk
 nltk.download("punkt")
+nltk.download('wordnet')
 from nltk.stem import WordNetLemmatizer
 
 import tensorflow as tf
@@ -24,6 +27,10 @@ from keras.layers import Dense, Dropout
 from keras.optimizers import SGD
 
 from deep_translator import GoogleTranslator
+
+import speech_recognition as sr
+from io import BytesIO
+from datetime import datetime
 
 
 @api_view(["GET"])
@@ -110,7 +117,7 @@ def training(request):
     return HttpResponse("Created words.pkl.<br>Created classes.pkl.<br>Saved NLP Model (chatbotmodel.h5).<br>Training of the NLP Model Completed!")
 
 
-@api_view(["GET"])
+@api_view(["POST"])
 def main(request):
     """
     Main - handling audio input, language detection, translation, and interaction with a chatbot.
@@ -124,31 +131,38 @@ def main(request):
         HttpResponse: A response indicating the outcome of the chatbot interaction.
     """
     lang_voice = {"en": 1, "es": 2, "fr": 3}
-    intents = load_intents() 
+    intents = load_intents()
 
-    try:
-        # Attempt to capture and recognize audio input in English, French, and Spanish
-        English, French, Spanish = capture_and_recognize(request)
+    r = sr.Recognizer()
+    
+    data = request.data['file']
+    read_data = data.read()
 
-    except:
-        # Handle invalid audio input
-        details = {"User_Request": " ",
-                   "Chatbot_Response": "Invalid audio input given/no audio input given. Please press the button to speak to BabelBot!"}
-        lang_ISO = "en"
-        res_en2lang = "Invalid audio input given/no audio input given. Please press the button to speak to BabelBot!"
+    with sr.AudioFile(BytesIO(read_data)) as source:
+            audio = r.record(source)
 
-        speak_response(lang_ISO, res_en2lang, lang_voice)
-        return render(request,"kiosk.html", details)
+    text_en = r.recognize_google(audio, language="en-US")
+    text_fr = r.recognize_google(audio, language="fr-FR")
+    text_es = r.recognize_google(audio, language="es-AR")
+
+    print("PAST AUDIO STUFF")
     
     # Detect possible languages from the captured audio
-    possible_langs = lang_detect(English, French, Spanish)
+    possible_langs = lang_detect(text_en, text_fr, text_es)
     lang_list, prob_list = lang_prob(possible_langs)
     lang_ISO = ISO_639(lang_list, prob_list)
-    lang_map = {"en": English, "es": Spanish, "fr": French}
+    lang_map = {"en": text_en, "es": text_es, "fr": text_fr}
 
     try:
         if lang_ISO in lang_map:
             message = lang_map[lang_ISO]
+            message_time = datetime.now()
+
+            user_query = {
+                "content": message.capitalize(),
+                "timestamp": message_time,
+                "userIsSender": True,
+            }
            
             # Translate the message to English
             translator_lang2en = GoogleTranslator(source = "auto", target = "en")
@@ -173,7 +187,18 @@ def main(request):
             details = {"User_Request": message,
                         "Chatbot_Response": res_en2lang}
             speak_response(lang_ISO, res_en2lang, lang_voice)
-            return render(request,"kiosk.html", details)
+            print(res_en2lang)
+            bot_response = {
+                "content": res_en2lang,
+                "timestamp": datetime.now(),
+                "userIsSender": False
+            }
+            response_data = {
+                "userQuery": user_query,
+                "botResponse": bot_response
+            }
+            
+            return Response(response_data)
             
     except ValueError as e:
         print(f"Error: {e}")
