@@ -159,14 +159,6 @@ const ActionButtons = () => {
           <KeyboardIcon fontSize="large" />
         )}
       </IconButton>
-      <audio
-        controls
-        src={
-          audioChunksRef.current.length > 0
-            ? URL.createObjectURL(new Blob(audioChunksRef.current))
-            : undefined
-        }
-      />
     </Box>
   );
 };
