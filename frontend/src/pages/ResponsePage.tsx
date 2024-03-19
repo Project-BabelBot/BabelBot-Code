@@ -5,7 +5,7 @@ import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ActionButtons from "../components/ActionButtons";
 import IconButton from "@mui/material/IconButton";
 import Dialog from "@mui/material/Dialog";
@@ -69,6 +69,7 @@ const ResponsePage = () => {
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
   const { keyboardActive } = useAppSelector((state) => state.actionButtons);
   const { messages } = useAppSelector((state) => state.messages);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
 
   const dispatch = useAppDispatch();
 
@@ -91,6 +92,10 @@ const ResponsePage = () => {
         }, 1000);
       }
     }
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
+    }
 
     return () => clearTimeout(timeoutId);
   }, [messages]);
@@ -107,7 +112,7 @@ const ResponsePage = () => {
   return (
     <Box sx={styles.root}>
       <Header leftContent={<ActionButtons />} />
-      <List sx={styles.chatList} component="div">
+      <List sx={styles.chatList} component="div" ref={chatContainerRef}>
         {messages.map((o) => {
           return (
             <ListItem component="div" key={o.id}>
