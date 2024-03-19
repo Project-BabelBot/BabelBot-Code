@@ -1,5 +1,5 @@
 import { Box, TextField } from "@mui/material";
-import { useState, ChangeEvent, useRef } from "react";
+import React, { useState, ChangeEvent, useRef } from "react";
 import Keyboard, { KeyboardReactInterface } from "react-simple-keyboard";
 import "react-simple-keyboard/build/css/index.css";
 import { useAppDispatch } from "../state/hooks";
@@ -25,42 +25,22 @@ const VirtualKeyboard = ({ handleEnter }: VirtualKeyboardProps) => {
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ): void => {
     setInput(event.target.value);
-    if (keyboardRef.current) {
-      keyboardRef.current.setInput(input);
+    keyboardRef.current?.setInput(event.target.value);
+  };
+
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      onSubmit();
     }
   };
 
-  const onKeyPress = async (button: string) => {
+  const onKeyPress = (button: string) => {
     if (button === "{shift}" || button === "{lock}") {
       setLayoutName(layoutName === "default" ? "shift" : "default");
     }
 
     if (button === "{enter}" && input.trim() !== "") {
-      const newMessage = {
-        content: input,
-        timestamp: new Date().toISOString(),
-        userIsSender: true,
-      };
-      dispatch(appendMessage(newMessage));
-      handleEnter?.();
-      dispatch(setKeyboardActive(false));
-      const formData = new FormData();
-      formData.append("textInput", input);
-      try {
-        const res = await axios.post(
-          "http://localhost:8000/api/text/",
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-        dispatch(appendMessage(res.data));
-        navigate("/response");
-      } catch (error) {
-        console.log("API ERROR");
-      }
+      onSubmit();
     }
 
     if (input.trim() === "") {
@@ -68,19 +48,51 @@ const VirtualKeyboard = ({ handleEnter }: VirtualKeyboardProps) => {
     }
   };
 
+  const onSubmit = async () => {
+    const newMessage = {
+      content: input,
+      timestamp: new Date().toISOString(),
+      userIsSender: true,
+    };
+    dispatch(appendMessage(newMessage));
+    handleEnter?.();
+    dispatch(setKeyboardActive(false));
+    const formData = new FormData();
+    formData.append("textInput", input);
+    try {
+      const res = await axios.post(
+        "http://localhost:8000/api/text/",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      dispatch(appendMessage(res.data));
+      navigate("/response");
+    } catch (error) {
+      console.log("API ERROR");
+    }
+  };
+
   return (
     <Box>
       <TextField
+        onSubmit={() => console.log(input)}
+        autoFocus
         fullWidth
-        value={input}
-        placeholder={"Type on the keyboard to start"}
         onChange={(e) => onChange(e)}
+        onKeyDown={onKeyDown}
+        placeholder="Type on the keyboard to start"
+        value={input}
       />
       <Keyboard
         keyboardRef={(r) => (keyboardRef.current = r)}
         layoutName={layoutName}
         onChange={setInput}
         onKeyPress={onKeyPress}
+        preventMouseDownDefault
       />
     </Box>
   );
