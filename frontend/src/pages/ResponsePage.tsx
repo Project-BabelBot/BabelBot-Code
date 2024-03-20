@@ -110,6 +110,27 @@ const ResponsePage = () => {
 
   const readMessage = (message: Message) => {
     // Use tts to read message
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(message.content);
+      // Set additional parameters if needed
+      utterance.lang = 'en-US'; // Set language to English (United States)
+      
+        // Find a voice that supports English
+      const englishVoice = speechSynthesis.getVoices().find(voice => voice.lang === 'en-US');
+
+      if (englishVoice) {
+        utterance.voice = englishVoice;
+      } else {
+        console.error('No English voice found.');
+      }
+        utterance.rate = 1.0; // Set the speaking rate to normal speed
+        utterance.pitch = 1.0; // Set the pitch to normal
+      
+      // Speak the message
+      window.speechSynthesis.speak(utterance);
+    } else {
+      console.error('Speech synthesis is not supported in this browser.');
+    }
   };
 
   return (
