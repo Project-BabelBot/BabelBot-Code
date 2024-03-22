@@ -4,6 +4,7 @@ const Avatar = () => {
   const modelSrc = "https://models.readyplayer.me/6529c84847d203826af5808d.glb";
 
   const animationSrc = "./M_Standing_Expressions_basic_wave.fbx";
+  // const animationSrc = "./Avatar_Pose_Listen.glb";
   const poseSrc = "./female-pose-standing.glb";
 
   return (
@@ -48,7 +49,7 @@ const Avatar = () => {
       }}
       environment="soft"
       fillLightColor="#6794FF"
-      fillLightIntensity={0.8}
+      fillLightIntensity={2.8}
       keyLightColor="#FFFFFF"
       keyLightIntensity={1.2}
       modelSrc={modelSrc}

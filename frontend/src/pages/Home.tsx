@@ -18,6 +18,7 @@ const styles = {
     justifyContent: "center",
     overflow: "hidden",
     paddingY: 7,
+    Maxwidth: "100px",
   },
   root: {
     display: "flex",
