@@ -88,7 +88,7 @@ const ResponsePage = () => {
     let timeoutId: NodeJS.Timeout | undefined;
     if (!latestMessage.userIsSender) {
       // If user is not sender, read message via tts
-      readMessage(latestMessage);
+      // readMessage(latestMessage);
       if (latestMessage.attachment) {
         timeoutId = setTimeout(() => {
           setOpen(true);
@@ -110,26 +110,30 @@ const ResponsePage = () => {
 
   const readMessage = (message: Message) => {
     // Use tts to read message
-    if ('speechSynthesis' in window) {
+    if ("speechSynthesis" in window) {
       const utterance = new SpeechSynthesisUtterance(message.content);
-      // Set additional parameters if needed
-      utterance.lang = 'en-US'; // Set language to English (United States)
-      
-        // Find a voice that supports English
-      const englishVoice = speechSynthesis.getVoices().find(voice => voice.lang === 'en-US');
+
+      // Setting Web Speech API parameters
+      utterance.lang = "en-US"; // Set language to English (United States)
+      utterance.rate = 1.0; // Set the speaking rate to normal speed
+      utterance.pitch = 1.0; // Set the pitch to normal
+
+      // Find a voice that supports English
+      const voices = speechSynthesis.getVoices();
+      // console.log(voices);
+
+      const englishVoice = voices[2];
 
       if (englishVoice) {
         utterance.voice = englishVoice;
       } else {
-        console.error('No English voice found.');
+        console.error("Cant Find a Voice.");
       }
-        utterance.rate = 1.0; // Set the speaking rate to normal speed
-        utterance.pitch = 1.0; // Set the pitch to normal
-      
+
       // Speak the message
       window.speechSynthesis.speak(utterance);
     } else {
-      console.error('Speech synthesis is not supported in this browser.');
+      console.error("Speech synthesis is not supported in this browser.");
     }
   };
 
@@ -164,7 +168,12 @@ const ResponsePage = () => {
                         <OpenInNewIcon />
                       </IconButton>
                     )}
-                    <IconButton sx={styles.actionButton}>
+                    <IconButton
+                      onClick={() => {
+                        readMessage(o);
+                      }}
+                      sx={styles.actionButton}
+                    >
                       <VolumeUpIcon />
                     </IconButton>
                   </Box>
