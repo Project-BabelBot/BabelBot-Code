@@ -4,6 +4,7 @@ export type Message = {
   attachment?: string;
   content: string;
   id: number;
+  language: string;
   timestamp: string;
   userIsSender: boolean;
 };

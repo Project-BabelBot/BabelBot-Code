@@ -1,5 +1,4 @@
 # These libraries are used by Django for rendering your pages.
-import pyttsx3
 from keras.models import load_model
 from tensorflow import keras
 import tensorflow as tf

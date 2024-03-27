@@ -134,23 +134,42 @@ const ResponsePage = () => {
   const readMessage = (message: Message) => {
     if ("speechSynthesis" in window) {
       setSpeakingMessageId(message.id);
+
       const utterance = new SpeechSynthesisUtterance(message.content);
-      utterance.lang = "en-US";
-      utterance.rate = 1.5;
-      utterance.pitch = 1.0;
-
-      const voices = speechSynthesis.getVoices();
-      const englishVoice = voices[2];
-
       utterance.onend = () => {
         setSpeakingMessageId(null);
       };
+      const voices = speechSynthesis.getVoices();
 
-      if (englishVoice) {
-        utterance.voice = englishVoice;
-      } else {
-        console.error("Can't find a voice");
+      let voice;
+      switch (message.language) {
+        case "en":
+          voice =
+            voices.find(
+              (o) => o.name === "Microsoft Zira - English (United States)"
+            ) || voices.find((o) => o.lang === "en-US");
+          break;
+        case "fr":
+          voice =
+            voices.find((o) => o.name === "Google français") ||
+            voices.find((o) => o.lang === "fr-FR");
+          break;
+        case "es":
+          voice =
+            voices.find((o) => o.name === "Google español de Estados Unidos") ||
+            voices.find((o) => o.lang === "es-ES");
+          break;
+        default:
+          voice = voices[0];
       }
+
+      if (voice) {
+        utterance.voice = voice;
+      } else {
+        utterance.voice = voices[0];
+        console.error("A voice could not be found for this language");
+      }
+
       window.speechSynthesis.speak(utterance);
     } else {
       console.error("Speech synthesis is not supported in this browser");
