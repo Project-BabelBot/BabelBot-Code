@@ -245,12 +245,6 @@ def ISO_639(langauge_code, probability):
     return ISO_639_2
 
 
-def exit_input(message):
-    if message.lower() == "exit please":
-        return 1
-    return 0
-
-
 def speak_response(lang_ISO, res_en2lang, lang_voice):
     """
     Translate and speak the audio response in different languages.
