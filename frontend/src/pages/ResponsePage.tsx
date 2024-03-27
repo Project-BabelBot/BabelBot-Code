@@ -78,6 +78,7 @@ const ResponsePage = () => {
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
   const { keyboardActive } = useAppSelector((state) => state.actionButtons);
   const { messages } = useAppSelector((state) => state.messages);
+
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -109,31 +110,24 @@ const ResponsePage = () => {
   };
 
   const readMessage = (message: Message) => {
-    // Use tts to read message
     if ("speechSynthesis" in window) {
-      const utterance = new SpeechSynthesisUtterance(message.content);
+      const utterance = new SpeechSynthesisUtterance();
+      utterance.lang = "en-US";
+      utterance.rate = 1.0;
+      utterance.pitch = 1.0;
 
-      // Setting Web Speech API parameters
-      utterance.lang = "en-US"; // Set language to English (United States)
-      utterance.rate = 1.0; // Set the speaking rate to normal speed
-      utterance.pitch = 1.0; // Set the pitch to normal
-
-      // Find a voice that supports English
       const voices = speechSynthesis.getVoices();
-      // console.log(voices);
-
+      console.log(voices);
       const englishVoice = voices[2];
 
       if (englishVoice) {
         utterance.voice = englishVoice;
       } else {
-        console.error("Cant Find a Voice.");
+        console.error("Can't find a voice");
       }
-
-      // Speak the message
       window.speechSynthesis.speak(utterance);
     } else {
-      console.error("Speech synthesis is not supported in this browser.");
+      console.error("Speech synthesis is not supported in this browser");
     }
   };
 
