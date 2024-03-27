@@ -4,8 +4,8 @@ from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.main, name = "Kiosk"),
-    path('training/', views.training, name = "Training Model"),
-    path('search/', views.search_flight, name = 'search_flight'),
-    path('text/', views.text, name = "Text")
+    path('', views.main, name = "audio_nlp"),
+    path('training/', views.training, name = "model_training"),
+    path('flight-search/', views.flight_search, name = 'flight_search'),
+    path('text-nlp/', views.text_nlp, name = "text-nlp")
 ]

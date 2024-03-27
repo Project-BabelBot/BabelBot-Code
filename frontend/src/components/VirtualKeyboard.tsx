@@ -61,7 +61,7 @@ const VirtualKeyboard = ({ handleEnter }: VirtualKeyboardProps) => {
     formData.append("textInput", input);
     try {
       const res = await axios.post(
-        "http://localhost:8000/api/text/",
+        "http://localhost:8000/api/text-nlp/",
         formData,
         {
           headers: {
