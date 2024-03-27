@@ -4,7 +4,6 @@ import Header from "../components/Header";
 import ActionButtons from "../components/ActionButtons";
 import VirtualKeyboard from "../components/VirtualKeyboard";
 import { useAppSelector } from "../state/hooks";
-import { useNavigate } from "react-router";
 
 const styles = {
   avatar: {
@@ -27,11 +26,6 @@ const styles = {
 
 const Home = () => {
   const { keyboardActive } = useAppSelector((state) => state.actionButtons);
-  const navigate = useNavigate();
-
-  const handleEnter = () => {
-    navigate("/response");
-  };
 
   return (
     <Box sx={styles.root}>
@@ -44,7 +38,7 @@ const Home = () => {
           sx={styles.avatar}
         />
       </Box>
-      {keyboardActive ? <VirtualKeyboard handleEnter={handleEnter} /> : null}
+      {keyboardActive ? <VirtualKeyboard /> : null}
     </Box>
   );
 };

@@ -1,14 +1,17 @@
 # These libraries are used by Django for rendering your pages.
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.db.models import Q
+
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from django.db.models import Q
 
 from .forms import FlightSearchForm
 from .models import Flight
-
 from .model_functions import *
+
+from io import BytesIO
+from datetime import datetime
 
 import numpy as np
 import random
@@ -29,8 +32,6 @@ from keras.optimizers import SGD
 from deep_translator import GoogleTranslator
 
 import speech_recognition as sr
-from io import BytesIO
-from datetime import datetime
 
 
 @api_view(["GET"])
@@ -135,17 +136,15 @@ def main(request):
 
     r = sr.Recognizer()
     
-    data = request.data['file']
-    read_data = data.read()
+    input_audio = request.data['file']
+    input_audio = input_audio.read()
 
-    with sr.AudioFile(BytesIO(read_data)) as source:
+    with sr.AudioFile(BytesIO(input_audio)) as source:
             audio = r.record(source)
 
     text_en = r.recognize_google(audio, language="en-US")
     text_fr = r.recognize_google(audio, language="fr-FR")
     text_es = r.recognize_google(audio, language="es-AR")
-
-    print("PAST AUDIO STUFF")
     
     # Detect possible languages from the captured audio
     possible_langs = lang_detect(text_en, text_fr, text_es)
@@ -168,15 +167,6 @@ def main(request):
             translator_lang2en = GoogleTranslator(source = "auto", target = "en")
             lang2en = translator_lang2en.translate(message)
 
-            # Check if the user wants to exit
-            if exit_input(message) == 1:
-                details = {"User_Request": message,
-                            "Chatbot_Response": "Successfully exited BabelBot!"}
-                lang_ISO = "en"
-                res_en2lang = "Successfully exited BabelBot!"
-                speak_response(lang_ISO, res_en2lang, lang_voice)
-                return render(request,"kiosk.html", details)
-
             ints = predict_class(lang2en)
             res = get_response(ints, intents)
 
@@ -184,10 +174,8 @@ def main(request):
             translator_en2lang = GoogleTranslator(source = "auto", target = lang_ISO)
             res_en2lang = translator_en2lang.translate(res)
 
-            details = {"User_Request": message,
-                        "Chatbot_Response": res_en2lang}
             speak_response(lang_ISO, res_en2lang, lang_voice)
-            print(res_en2lang)
+
             bot_response = {
                 "content": res_en2lang,
                 "timestamp": datetime.now(),
@@ -203,9 +191,37 @@ def main(request):
     except ValueError as e:
         print(f"Error: {e}")
         return HttpResponse("Could not understand audio. Please press the button again to try again!")
+    
+@api_view(["POST"])
+def text_nlp(request):
+    input_text = request.data["textInput"]
+
+    lang_ISO = "en"
+    lang_voice = {"en": 1, "es": 2, "fr": 3}
+    intents = load_intents()
+
+    translator_lang2en = GoogleTranslator(source = "auto", target = "en")
+    lang2en = translator_lang2en.translate(input_text)
+
+    ints = predict_class(lang2en)
+    res = get_response(ints, intents)
+
+    # Translate the response back to the original language
+    translator_en2lang = GoogleTranslator(source = "auto", target = lang_ISO)
+    res_en2lang = translator_en2lang.translate(res)
+
+    speak_response(lang_ISO, res_en2lang, lang_voice)
+
+    botResponse = {
+        "content": res_en2lang,
+        "timestamp": datetime.now(),
+        "userIsSender": False
+    } 
+    
+    return Response(botResponse)
 
 
-def search_flight(request):
+def flight_search(request):
     cities = Flight.objects.values_list('city', flat=True).distinct()
 
     if request.method == 'POST':
