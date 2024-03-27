@@ -17,6 +17,7 @@ import { useAppSelector } from "../state/hooks";
 import { Message } from "../state/slices/messagesSlice";
 import VirtualKeyboard from "../components/VirtualKeyboard";
 import Typography from "@mui/material/Typography";
+import Avatar from "../components/Avatar";
 
 const styles = {
   // TODO: Fix theming
@@ -178,7 +179,19 @@ const ResponsePage = () => {
 
   return (
     <Box sx={styles.root}>
-      <Header leftContent={<ActionButtons />} />
+      <Header
+        leftContent={
+          <Box sx={{ display: "flex", flexDirection: "row" }}>
+            <ActionButtons />
+            <Avatar
+              cameraInitialDistance={1.2}
+              cameraTarget={1.5}
+              width="150px"
+              height="150px"
+            />
+          </Box>
+        }
+      />
       {messages.length > 0 ? (
         <List sx={styles.chatList} component="div" ref={chatContainerRef}>
           {messages.map((o) => {

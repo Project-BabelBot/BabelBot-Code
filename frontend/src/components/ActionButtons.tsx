@@ -18,11 +18,15 @@ import { appendMessage } from "../state/slices/messagesSlice";
 const styles = {
   activeButton: {
     backgroundColor: "secondary.main",
+    height: "75px",
+    width: "75px",
   },
   inactiveButton: {
     backgroundColor: "primary.light",
+    height: "75px",
+    width: "75px",
   },
-  root: { display: "flex", gap: 1 },
+  root: { alignItems: "center", display: "flex", gap: 1 },
 };
 
 const ActionButtons = () => {

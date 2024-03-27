@@ -1,5 +1,4 @@
 import Box from "@mui/material/Box";
-import logo from "../assets/logo.png";
 import Header from "../components/Header";
 import ActionButtons from "../components/ActionButtons";
 import VirtualKeyboard from "../components/VirtualKeyboard";

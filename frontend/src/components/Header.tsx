@@ -7,7 +7,7 @@ const styles = {
     display: "flex",
     justifyContent: "space-between",
     flex: "0 0 auto",
-    padding: 1
+    padding: 1,
   },
 };
 
