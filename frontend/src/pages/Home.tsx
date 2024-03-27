@@ -31,7 +31,7 @@ const Home = () => {
     <Box sx={styles.root}>
       <Header leftContent={<ActionButtons />} />
       <Box sx={styles.avatarContainer}>
-        <Avatar />
+        <Avatar height="700px" width="700px" />
       </Box>
       {keyboardActive ? <VirtualKeyboard /> : null}
     </Box>

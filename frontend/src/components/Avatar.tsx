@@ -64,7 +64,7 @@ const Avatar = ({
       modelSrc={modelSrc}
       //poseSrc={poseSrc}
       scale={1}
-      style={{ width: width || "500px", height: height }}
+      style={{ width: width, height: height }}
     />
   );
 };
