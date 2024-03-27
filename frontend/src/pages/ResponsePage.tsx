@@ -76,6 +76,8 @@ const styles = {
 const ResponsePage = () => {
   const [open, setOpen] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
+  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+
   const { keyboardActive } = useAppSelector((state) => state.actionButtons);
   const { messages } = useAppSelector((state) => state.messages);
 
@@ -89,7 +91,7 @@ const ResponsePage = () => {
     let timeoutId: NodeJS.Timeout | undefined;
     if (!latestMessage.userIsSender) {
       // If user is not sender, read message via tts
-      // readMessage(latestMessage);
+      readMessage(latestMessage);
       if (latestMessage.attachment) {
         timeoutId = setTimeout(() => {
           setOpen(true);
@@ -104,6 +106,24 @@ const ResponsePage = () => {
     return () => clearTimeout(timeoutId);
   }, [messages]);
 
+  useEffect(() => {
+    if ("speechSynthesis" in window) {
+      const loadVoices = () => {
+        setVoices(window.speechSynthesis.getVoices());
+      };
+
+      window.speechSynthesis.addEventListener("voiceschanged", loadVoices);
+      loadVoices(); // Call loadVoices once to get voices on initial load
+
+      return () => {
+        console.log("IN CLEANUP");
+        window.speechSynthesis.removeEventListener("voiceschanged", loadVoices);
+      };
+    } else {
+      console.error("Speech synthesis is not supported in this browser");
+    }
+  }, []);
+
   const handleDialogClose = () => {
     setOpen(false);
     setSelectedMessage(null);
@@ -111,13 +131,12 @@ const ResponsePage = () => {
 
   const readMessage = (message: Message) => {
     if ("speechSynthesis" in window) {
-      const utterance = new SpeechSynthesisUtterance();
+      const utterance = new SpeechSynthesisUtterance(message.content);
       utterance.lang = "en-US";
-      utterance.rate = 1.0;
+      utterance.rate = 1.5;
       utterance.pitch = 1.0;
 
       const voices = speechSynthesis.getVoices();
-      console.log(voices);
       const englishVoice = voices[2];
 
       if (englishVoice) {
