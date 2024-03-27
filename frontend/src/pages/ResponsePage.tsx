@@ -77,6 +77,9 @@ const ResponsePage = () => {
   const [open, setOpen] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const [speakingMessageId, setSpeakingMessageId] = useState<number | null>(
+    null
+  );
 
   const { keyboardActive } = useAppSelector((state) => state.actionButtons);
   const { messages } = useAppSelector((state) => state.messages);
@@ -131,6 +134,7 @@ const ResponsePage = () => {
 
   const readMessage = (message: Message) => {
     if ("speechSynthesis" in window) {
+      setSpeakingMessageId(message.id);
       const utterance = new SpeechSynthesisUtterance(message.content);
       utterance.lang = "en-US";
       utterance.rate = 1.5;
@@ -138,6 +142,10 @@ const ResponsePage = () => {
 
       const voices = speechSynthesis.getVoices();
       const englishVoice = voices[2];
+
+      utterance.onend = () => {
+        setSpeakingMessageId(null);
+      };
 
       if (englishVoice) {
         utterance.voice = englishVoice;
@@ -183,7 +191,9 @@ const ResponsePage = () => {
                     )}
                     <IconButton
                       onClick={() => {
-                        readMessage(o);
+                        if (speakingMessageId !== o.id) {
+                          readMessage(o);
+                        }
                       }}
                       sx={styles.actionButton}
                     >

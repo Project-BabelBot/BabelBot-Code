@@ -243,22 +243,3 @@ def ISO_639(langauge_code, probability):
         ISO_639_2 = max(lang_counter, key=lang_counter.get)
 
     return ISO_639_2
-
-
-def speak_response(lang_ISO, res_en2lang, lang_voice):
-    """
-    Translate and speak the audio response in different languages.
-    """
-    # Check if the language ISO code has a corresponding voice index
-    if lang_ISO in lang_voice:
-        engine = pyttsx3.init()
-
-        # Adjust speech rate for Spanish (you can customize this based on preferences)
-        if lang_ISO == "es":
-            engine.setProperty("rate", 150)
-
-        voices = engine.getProperty("voices")
-        # Set the voice based on the language ISO code
-        engine.setProperty("voice", voices[lang_voice[lang_ISO]].id)
-        engine.say(res_en2lang)
-        engine.runAndWait()
