@@ -87,12 +87,29 @@ const ResponsePage = () => {
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if ("speechSynthesis" in window) {
+      const loadVoices = () => {
+        setVoices(window.speechSynthesis.getVoices());
+      };
+
+      window.speechSynthesis.addEventListener("voiceschanged", loadVoices);
+      loadVoices();
+
+      return () => {
+        window.speechSynthesis.removeEventListener("voiceschanged", loadVoices);
+      };
+    } else {
+      console.error("Speech synthesis is not supported in this browser");
+    }
+  }, []);
+
+  useEffect(() => {
     if (messages.length <= 0) {
       return;
     }
     const latestMessage = messages[messages.length - 1];
     let timeoutId: NodeJS.Timeout | undefined;
-    if (!latestMessage.userIsSender) {
+    if (!latestMessage.userIsSender && voices.length !== 0) {
       // If user is not sender, read message via tts
       readMessage(latestMessage);
       if (latestMessage.attachment) {
@@ -107,25 +124,7 @@ const ResponsePage = () => {
     }
 
     return () => clearTimeout(timeoutId);
-  }, [messages]);
-
-  useEffect(() => {
-    if ("speechSynthesis" in window) {
-      const loadVoices = () => {
-        setVoices(window.speechSynthesis.getVoices());
-      };
-
-      window.speechSynthesis.addEventListener("voiceschanged", loadVoices);
-      loadVoices(); // Call loadVoices once to get voices on initial load
-
-      return () => {
-        console.log("IN CLEANUP");
-        window.speechSynthesis.removeEventListener("voiceschanged", loadVoices);
-      };
-    } else {
-      console.error("Speech synthesis is not supported in this browser");
-    }
-  }, []);
+  }, [messages, voices.length]);
 
   const handleDialogClose = () => {
     setOpen(false);
