@@ -76,9 +76,32 @@ const styles = {
 const ResponsePage = () => {
   const [open, setOpen] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
+  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const [speakingMessageId, setSpeakingMessageId] = useState<number | null>(
+    null
+  );
+
   const { keyboardActive } = useAppSelector((state) => state.actionButtons);
   const { messages } = useAppSelector((state) => state.messages);
+
   const chatContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if ("speechSynthesis" in window) {
+      const loadVoices = () => {
+        setVoices(window.speechSynthesis.getVoices());
+      };
+
+      window.speechSynthesis.addEventListener("voiceschanged", loadVoices);
+      loadVoices();
+
+      return () => {
+        window.speechSynthesis.removeEventListener("voiceschanged", loadVoices);
+      };
+    } else {
+      console.error("Speech synthesis is not supported in this browser");
+    }
+  }, []);
 
   useEffect(() => {
     if (messages.length <= 0) {
@@ -86,7 +109,7 @@ const ResponsePage = () => {
     }
     const latestMessage = messages[messages.length - 1];
     let timeoutId: NodeJS.Timeout | undefined;
-    if (!latestMessage.userIsSender) {
+    if (!latestMessage.userIsSender && voices.length !== 0) {
       // If user is not sender, read message via tts
       readMessage(latestMessage);
       if (latestMessage.attachment) {
@@ -101,7 +124,7 @@ const ResponsePage = () => {
     }
 
     return () => clearTimeout(timeoutId);
-  }, [messages]);
+  }, [messages, voices.length]);
 
   const handleDialogClose = () => {
     setOpen(false);
@@ -109,7 +132,48 @@ const ResponsePage = () => {
   };
 
   const readMessage = (message: Message) => {
-    // Use tts to read message
+    if ("speechSynthesis" in window) {
+      setSpeakingMessageId(message.id);
+
+      const utterance = new SpeechSynthesisUtterance(message.content);
+      utterance.onend = () => {
+        setSpeakingMessageId(null);
+      };
+      const voices = speechSynthesis.getVoices();
+
+      let voice;
+      switch (message.language) {
+        case "en":
+          voice =
+            voices.find(
+              (o) => o.name === "Microsoft Zira - English (United States)"
+            ) || voices.find((o) => o.lang === "en-US");
+          break;
+        case "fr":
+          voice =
+            voices.find((o) => o.name === "Google français") ||
+            voices.find((o) => o.lang === "fr-FR");
+          break;
+        case "es":
+          voice =
+            voices.find((o) => o.name === "Google español de Estados Unidos") ||
+            voices.find((o) => o.lang === "es-ES");
+          break;
+        default:
+          voice = voices[0];
+      }
+
+      if (voice) {
+        utterance.voice = voice;
+      } else {
+        utterance.voice = voices[0];
+        console.error("A voice could not be found for this language");
+      }
+
+      window.speechSynthesis.speak(utterance);
+    } else {
+      console.error("Speech synthesis is not supported in this browser");
+    }
   };
 
   return (
@@ -143,7 +207,14 @@ const ResponsePage = () => {
                         <OpenInNewIcon />
                       </IconButton>
                     )}
-                    <IconButton sx={styles.actionButton}>
+                    <IconButton
+                      onClick={() => {
+                        if (speakingMessageId !== o.id) {
+                          readMessage(o);
+                        }
+                      }}
+                      sx={styles.actionButton}
+                    >
                       <VolumeUpIcon />
                     </IconButton>
                   </Box>

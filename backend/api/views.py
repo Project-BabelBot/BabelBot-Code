@@ -131,7 +131,6 @@ def main(request):
     Returns:
         HttpResponse: A response indicating the outcome of the chatbot interaction.
     """
-    lang_voice = {"en": 1, "es": 2, "fr": 3}
     intents = load_intents()
 
     r = sr.Recognizer()
@@ -174,10 +173,9 @@ def main(request):
             translator_en2lang = GoogleTranslator(source = "auto", target = lang_ISO)
             res_en2lang = translator_en2lang.translate(res)
 
-            speak_response(lang_ISO, res_en2lang, lang_voice)
-
             bot_response = {
                 "content": res_en2lang,
+                "language": lang_ISO,
                 "timestamp": datetime.now(),
                 "userIsSender": False
             }
@@ -197,7 +195,6 @@ def text_nlp(request):
     input_text = request.data["textInput"]
 
     lang_ISO = "en"
-    lang_voice = {"en": 1, "es": 2, "fr": 3}
     intents = load_intents()
 
     translator_lang2en = GoogleTranslator(source = "auto", target = "en")
@@ -210,10 +207,9 @@ def text_nlp(request):
     translator_en2lang = GoogleTranslator(source = "auto", target = lang_ISO)
     res_en2lang = translator_en2lang.translate(res)
 
-    speak_response(lang_ISO, res_en2lang, lang_voice)
-
     botResponse = {
         "content": res_en2lang,
+        "language": lang_ISO,
         "timestamp": datetime.now(),
         "userIsSender": False
     } 
