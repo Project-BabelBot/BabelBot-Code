@@ -1,7 +1,6 @@
 import CloseIcon from "@mui/icons-material/Close";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
-import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
@@ -17,6 +16,8 @@ import { useAppSelector } from "../state/hooks";
 import { Message } from "../state/slices/messagesSlice";
 import VirtualKeyboard from "../components/VirtualKeyboard";
 import Typography from "@mui/material/Typography";
+import Avatar from "../components/Avatar";
+import { Box } from "../components/Box";
 
 const styles = {
   // TODO: Fix theming
@@ -178,7 +179,19 @@ const ResponsePage = () => {
 
   return (
     <Box sx={styles.root}>
-      <Header leftContent={<ActionButtons />} />
+      <Header
+        leftContent={
+          <Box sx={{ display: "flex", flexDirection: "row" }}>
+            <ActionButtons />
+            <Avatar
+              cameraInitialDistance={1.2}
+              cameraTarget={1.5}
+              width="150px"
+              height="150px"
+            />
+          </Box>
+        }
+      />
       {messages.length > 0 ? (
         <List sx={styles.chatList} component="div" ref={chatContainerRef}>
           {messages.map((o) => {

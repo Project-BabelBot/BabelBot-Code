@@ -1,13 +1,13 @@
-import Box from "@mui/material/Box";
 import { ReactNode } from "react";
 import Clock from "./Clock";
+import { Box } from "./Box";
 
 const styles = {
   header: {
     display: "flex",
     justifyContent: "space-between",
     flex: "0 0 auto",
-    padding: 1
+    padding: 1,
   },
 };
 

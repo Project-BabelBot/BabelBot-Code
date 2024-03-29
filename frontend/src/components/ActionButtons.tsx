@@ -3,7 +3,6 @@ import KeyboardIcon from "@mui/icons-material/Keyboard";
 import KeyboardHideIcon from "@mui/icons-material/KeyboardHide";
 import MicIcon from "@mui/icons-material/Mic";
 import MicOffIcon from "@mui/icons-material/MicOff";
-import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import {
   setKeyboardActive,
@@ -14,15 +13,20 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef } from "react";
 import { appendMessage } from "../state/slices/messagesSlice";
+import { Box } from "./Box";
 
 const styles = {
   activeButton: {
     backgroundColor: "secondary.main",
+    height: "75px",
+    width: "75px",
   },
   inactiveButton: {
     backgroundColor: "primary.light",
+    height: "75px",
+    width: "75px",
   },
-  root: { display: "flex", gap: 1 },
+  root: { alignItems: "center", display: "flex", gap: 1 },
 };
 
 const ActionButtons = () => {

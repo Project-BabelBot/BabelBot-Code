@@ -1,9 +1,9 @@
-import Box from "@mui/material/Box";
-import logo from "../assets/logo.png";
 import Header from "../components/Header";
 import ActionButtons from "../components/ActionButtons";
 import VirtualKeyboard from "../components/VirtualKeyboard";
 import { useAppSelector } from "../state/hooks";
+import Avatar from "../components/Avatar";
+import { Box } from "../components/Box";
 
 const styles = {
   avatar: {
@@ -31,12 +31,7 @@ const Home = () => {
     <Box sx={styles.root}>
       <Header leftContent={<ActionButtons />} />
       <Box sx={styles.avatarContainer}>
-        <Box
-          component="img"
-          alt="BabelBot Logo"
-          src={logo}
-          sx={styles.avatar}
-        />
+        <Avatar height="700px" width="700px" />
       </Box>
       {keyboardActive ? <VirtualKeyboard /> : null}
     </Box>

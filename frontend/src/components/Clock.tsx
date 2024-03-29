@@ -1,6 +1,6 @@
-import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { useState, useEffect } from "react";
+import { Box } from "./Box";
 
 const styles = {
   root: {

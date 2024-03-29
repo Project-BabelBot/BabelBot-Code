@@ -15,6 +15,7 @@
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.15.2",
     "@mui/material": "^5.14.17",
+    "@readyplayerme/visage": "^5.1.0",
     "@reduxjs/toolkit": "^2.1.0",
     "axios": "^1.6.1",
     "extendable-media-recorder": "^9.1.10",
