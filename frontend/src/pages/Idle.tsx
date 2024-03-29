@@ -1,9 +1,10 @@
 import TouchAppIcon from "@mui/icons-material/TouchApp";
-import { Box, Button, Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import logo from "../assets/logo.png";
 import Header from "../components/Header";
 import { useNavigate } from "react-router-dom";
 import Avatar from "../components/Avatar";
+import { Box, Img } from "../components/Box";
 
 const styles = {
   avatar: {
@@ -48,14 +49,7 @@ const Idle = () => {
   return (
     <Box sx={styles.root}>
       <Header
-        leftContent={
-          <Box
-            component="img"
-            alt="BabelBot Logo"
-            src={logo}
-            sx={styles.logo}
-          />
-        }
+        leftContent={<Img alt="BabelBot Logo" src={logo} sx={styles.logo} />}
       />
       <Box sx={styles.avatarContainer}>
         <Avatar height="600px" width="600px" />

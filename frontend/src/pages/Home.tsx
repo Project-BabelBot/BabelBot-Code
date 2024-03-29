@@ -1,9 +1,9 @@
-import Box from "@mui/material/Box";
 import Header from "../components/Header";
 import ActionButtons from "../components/ActionButtons";
 import VirtualKeyboard from "../components/VirtualKeyboard";
 import { useAppSelector } from "../state/hooks";
 import Avatar from "../components/Avatar";
+import { Box } from "../components/Box";
 
 const styles = {
   avatar: {

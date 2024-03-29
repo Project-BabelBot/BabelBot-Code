@@ -1,6 +1,6 @@
-import Box from "@mui/material/Box";
 import { ReactNode } from "react";
 import Clock from "./Clock";
+import { Box } from "./Box";
 
 const styles = {
   header: {

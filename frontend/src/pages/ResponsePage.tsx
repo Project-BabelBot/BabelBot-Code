@@ -1,7 +1,6 @@
 import CloseIcon from "@mui/icons-material/Close";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
-import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
@@ -18,6 +17,7 @@ import { Message } from "../state/slices/messagesSlice";
 import VirtualKeyboard from "../components/VirtualKeyboard";
 import Typography from "@mui/material/Typography";
 import Avatar from "../components/Avatar";
+import { Box } from "../components/Box";
 
 const styles = {
   // TODO: Fix theming
