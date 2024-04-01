@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useRef } from "react";
 import { appendMessage } from "../state/slices/messagesSlice";
 import { Box } from "./Box";
+import { openSnackbar } from "../state/slices/snackbarSlice";
 
 const styles = {
   activeButton: {
@@ -94,15 +95,7 @@ const ActionButtons = () => {
             if (error.response) {
               dispatch(appendMessage(error.response.data));
             } else {
-              const errorMessage = {
-                content:
-                  "Sorry, looks like there's a network error. Please try again later!",
-                error: true,
-                language: "en",
-                timestamp: new Date().toISOString(),
-                userIsSender: false,
-              };
-              dispatch(appendMessage(errorMessage));
+              dispatch(openSnackbar());
             }
           }
         }

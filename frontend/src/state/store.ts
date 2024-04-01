@@ -1,11 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import actionButtonSlice from "./slices/actionButtonSlice";
 import messagesSlice from "./slices/messagesSlice";
+import snackbarSlice from "./slices/snackbarSlice";
 
 export const store = configureStore({
   reducer: {
     actionButtons: actionButtonSlice,
     messages: messagesSlice,
+    snackbar: snackbarSlice,
   },
 });
 

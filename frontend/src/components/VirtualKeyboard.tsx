@@ -10,10 +10,10 @@ import { useNavigate } from "react-router-dom";
 import { Box } from "./Box";
 
 type VirtualKeyboardProps = {
-  handleEnter?: () => void;
+  onEnter?: () => void;
 };
 
-const VirtualKeyboard = ({ handleEnter }: VirtualKeyboardProps) => {
+const VirtualKeyboard = ({ onEnter }: VirtualKeyboardProps) => {
   const [layoutName, setLayoutName] = useState("default");
   const dispatch = useAppDispatch();
 
@@ -57,7 +57,7 @@ const VirtualKeyboard = ({ handleEnter }: VirtualKeyboardProps) => {
       userIsSender: true,
     };
     dispatch(appendMessage(newMessage));
-    handleEnter?.();
+    onEnter?.();
     dispatch(setKeyboardActive(false));
     const formData = new FormData();
     formData.append("textInput", input);
