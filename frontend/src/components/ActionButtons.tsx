@@ -9,7 +9,7 @@ import {
   setMicActive,
 } from "../state/slices/actionButtonSlice";
 import { useAppDispatch, useAppSelector } from "../state/hooks";
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef } from "react";
 import { appendMessage } from "../state/slices/messagesSlice";
@@ -89,14 +89,28 @@ const ActionButtons = () => {
           const { botResponse } = res.data;
           dispatch(appendMessage(userQuery));
           dispatch(appendMessage(botResponse));
-          navigate("/response");
         } catch (error) {
-          console.log("API ERROR");
+          if (isAxiosError(error)) {
+            if (error.response) {
+              dispatch(appendMessage(error.response.data));
+            } else {
+              const errorMessage = {
+                content:
+                  "Sorry, looks like there's a network error. Please try again later!",
+                error: true,
+                language: "en",
+                timestamp: new Date().toISOString(),
+                userIsSender: false,
+              };
+              dispatch(appendMessage(errorMessage));
+            }
+          }
         }
       };
 
       mediaRecorderRef.current.stop();
       mediaRecorderRef.current = null;
+      navigate("/response");
     }
   };
 

@@ -1,12 +1,13 @@
-import { Box, TextField } from "@mui/material";
+import { TextField } from "@mui/material";
 import React, { useState, ChangeEvent, useRef } from "react";
 import Keyboard, { KeyboardReactInterface } from "react-simple-keyboard";
 import "react-simple-keyboard/build/css/index.css";
 import { useAppDispatch } from "../state/hooks";
 import { setKeyboardActive } from "../state/slices/actionButtonSlice";
 import { appendMessage } from "../state/slices/messagesSlice";
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
+import { Box } from "./Box";
 
 type VirtualKeyboardProps = {
   handleEnter?: () => void;
@@ -51,6 +52,7 @@ const VirtualKeyboard = ({ handleEnter }: VirtualKeyboardProps) => {
   const onSubmit = async () => {
     const newMessage = {
       content: input,
+      language: "en",
       timestamp: new Date().toISOString(),
       userIsSender: true,
     };
@@ -70,10 +72,25 @@ const VirtualKeyboard = ({ handleEnter }: VirtualKeyboardProps) => {
         }
       );
       dispatch(appendMessage(res.data));
-      navigate("/response");
     } catch (error) {
-      console.log("API ERROR");
+      if (isAxiosError(error)) {
+        if (error.response) {
+          dispatch(appendMessage(error.response.data));
+        } else {
+          const errorMessage = {
+            content:
+              "Sorry, looks like there's a network error. Please try again later",
+            error: true,
+            language: "en",
+            timestamp: new Date().toISOString(),
+            userIsSender: false,
+          };
+          dispatch(appendMessage(errorMessage));
+        }
+      }
     }
+
+    navigate("/response");
   };
 
   return (

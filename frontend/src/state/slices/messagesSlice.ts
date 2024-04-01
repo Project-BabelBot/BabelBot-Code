@@ -3,6 +3,7 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 export type Message = {
   attachment?: string;
   content: string;
+  error?: boolean;
   id: number;
   language: string;
   timestamp: string;
