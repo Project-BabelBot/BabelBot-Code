@@ -18,6 +18,7 @@ import VirtualKeyboard from "../components/VirtualKeyboard";
 import Typography from "@mui/material/Typography";
 import Avatar from "../components/Avatar";
 import { Box } from "../components/Box";
+import Alert from "@mui/material/Alert";
 
 const styles = {
   // TODO: Fix theming
@@ -49,6 +50,11 @@ const styles = {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
+  },
+  error: {
+    border: 2,
+    borderColor: "secondary.main",
+    fontSize: "1rem",
   },
   noMessagesPrompt: {
     display: "flex",
@@ -197,16 +203,26 @@ const ResponsePage = () => {
           {messages.map((o) => {
             return (
               <ListItem component="div" key={o.id}>
-                <ListItemText
-                  primaryTypographyProps={{
-                    sx: o.userIsSender
-                      ? styles.userMessageText
-                      : styles.botMessageText,
-                  }}
-                  sx={o.userIsSender ? styles.userMessage : styles.botMessage}
-                >
-                  {o.content}
-                </ListItemText>
+                {o.error ? (
+                  <Alert
+                    severity="warning"
+                    sx={styles.error}
+                    variant="outlined"
+                  >
+                    {o.content}
+                  </Alert>
+                ) : (
+                  <ListItemText
+                    primaryTypographyProps={{
+                      sx: o.userIsSender
+                        ? styles.userMessageText
+                        : styles.botMessageText,
+                    }}
+                    sx={o.userIsSender ? styles.userMessage : styles.botMessage}
+                  >
+                    {o.content}
+                  </ListItemText>
+                )}
                 {!o.userIsSender && (
                   <Box sx={styles.actionItems}>
                     {o.attachment && (
