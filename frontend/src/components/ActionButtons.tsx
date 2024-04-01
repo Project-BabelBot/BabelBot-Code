@@ -85,7 +85,6 @@ const ActionButtons = () => {
               "Content-Type": "multipart/form-data",
             },
           });
-          console.log(res.data);
           const { userQuery } = res.data;
           const { botResponse } = res.data;
           dispatch(appendMessage(userQuery));

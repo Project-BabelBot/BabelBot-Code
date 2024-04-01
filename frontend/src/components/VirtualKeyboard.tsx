@@ -96,7 +96,6 @@ const VirtualKeyboard = ({ onEnter }: VirtualKeyboardProps) => {
   return (
     <Box>
       <TextField
-        onSubmit={() => console.log(input)}
         autoFocus
         fullWidth
         onChange={(e) => onChange(e)}
