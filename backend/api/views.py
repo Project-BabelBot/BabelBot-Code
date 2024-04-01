@@ -198,6 +198,10 @@ def main(request):
             
             return Response(response_data)
         
+        else:
+            raise AssertionError("Language not supported")
+
+        
     except sr.UnknownValueError as e:
         print(type(e))
         print(e)
