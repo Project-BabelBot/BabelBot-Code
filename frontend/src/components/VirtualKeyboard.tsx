@@ -72,6 +72,7 @@ const VirtualKeyboard = ({ onEnter }: VirtualKeyboardProps) => {
         }
       );
       dispatch(appendMessage(res.data));
+      navigate("/response");
     } catch (error) {
       if (isAxiosError(error)) {
         if (error.response) {
@@ -88,9 +89,8 @@ const VirtualKeyboard = ({ onEnter }: VirtualKeyboardProps) => {
           dispatch(appendMessage(errorMessage));
         }
       }
+      navigate("/response");
     }
-
-    navigate("/response");
   };
 
   return (

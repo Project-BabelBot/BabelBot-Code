@@ -89,6 +89,7 @@ const ActionButtons = () => {
           const { botResponse } = res.data;
           dispatch(appendMessage(userQuery));
           dispatch(appendMessage(botResponse));
+          navigate("/response");
         } catch (error) {
           if (isAxiosError(error)) {
             if (error.response) {
@@ -97,12 +98,12 @@ const ActionButtons = () => {
               dispatch(openSnackbar());
             }
           }
+          navigate("/response");
         }
       };
 
       mediaRecorderRef.current.stop();
       mediaRecorderRef.current = null;
-      navigate("/response");
     }
   };
 
