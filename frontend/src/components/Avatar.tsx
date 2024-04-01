@@ -14,16 +14,14 @@ const Avatar = ({
   width,
 }: AvatarProps) => {
   const modelSrc = "https://models.readyplayer.me/6529c84847d203826af5808d.glb";
-  const animationSrc = "./basic_wave.fbx";
+  const animationSrc = "./basic-wave.fbx";
+  // const poseSrc = "./avatar-pose-listen.glb";
 
   return (
     <ReadyPlayerMeAvatar
       animationSrc={animationSrc}
       backLightColor="#FFB878"
       backLightIntensity={2.2}
-      // background={{
-      //   color: "#ADD8E6",
-      // }}
       bloom={{
         intensity: 1,
         kernelSize: 1,
@@ -62,7 +60,7 @@ const Avatar = ({
       keyLightColor="#FFFFFF"
       keyLightIntensity={1.2}
       modelSrc={modelSrc}
-      //poseSrc={poseSrc}
+      // poseSrc={poseSrc}
       scale={1}
       style={{ width: width, height: height }}
     />
