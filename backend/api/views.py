@@ -136,7 +136,7 @@ def main(request):
 
     Requirements:
         - Django REST Framework
-        - Your custom modules (e.g., load_intents, capture_and_recognize, lang_detect, etc.)
+        - Your custom modules (e.g., load_intents, lang_detect, etc.)
         - External dependencies for language processing (e.g., nltk, tensorflow)
 
     Returns:
@@ -197,8 +197,21 @@ def main(request):
             }
             
             return Response(response_data)
+        
+    except sr.UnknownValueError as e:
+        print(type(e))
+        print(e)
+        error_response = {
+            "content": random.choice(ERROR_MESSAGES),
+            "error": True,
+            "language": "en",
+            "timestamp": datetime.now(),
+            "userIsSender": False
+        }
+        return Response(error_response, status=status.HTTP_400_BAD_REQUEST)
             
     except Exception as e:
+        print(type(e))
         print(e)
         error_response = {
             "content": random.choice(ERROR_MESSAGES),
