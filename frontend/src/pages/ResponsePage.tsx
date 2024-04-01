@@ -46,7 +46,7 @@ const styles = {
     color: "primary.contrastText",
     padding: 1,
   },
-  chatList: { height: "100%", overflowY: "scroll" },
+  chatList: { flex: 1, height: "100%", overflowY: "scroll" },
   dialogIconButton: { padding: 0 },
   dialogTitle: {
     display: "flex",
@@ -58,13 +58,18 @@ const styles = {
     borderColor: "secondary.main",
     fontSize: "1rem",
   },
-  noMessagesPrompt: {
+  mainContainer: {
     display: "flex",
-    flexDirection: "column",
-    height: "100%",
-    justifyContent: "flex-start",
+    flexDirection: "row",
+    flex: 1,
+    overflowY: "hidden",
+  },
+  noMessagesPrompt: {
     alignItems: "center",
-    paddingTop: 5,
+    display: "flex",
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: "center",
   },
   root: { display: "flex", flexDirection: "column", height: "100%" },
   userMessage: {
@@ -195,82 +200,76 @@ const ResponsePage = () => {
 
   return (
     <Box sx={styles.root}>
-      <Header
-        leftContent={
-          <Box sx={{ display: "flex", flexDirection: "row" }}>
-            <ActionButtons />
-            <Avatar
-              cameraInitialDistance={1.2}
-              cameraTarget={1.5}
-              width="150px"
-              height="150px"
-            />
-          </Box>
-        }
-      />
-      {messages.length > 0 ? (
-        <List sx={styles.chatList} component="div" ref={chatContainerRef}>
-          {messages.map((o) => {
-            return (
-              <ListItem component="div" key={o.id}>
-                {o.error ? (
-                  <Alert
-                    severity="warning"
-                    sx={styles.error}
-                    variant="outlined"
-                  >
-                    {o.content}
-                  </Alert>
-                ) : (
-                  <ListItemText
-                    primaryTypographyProps={{
-                      sx: o.userIsSender
-                        ? styles.userMessageText
-                        : styles.botMessageText,
-                    }}
-                    sx={o.userIsSender ? styles.userMessage : styles.botMessage}
-                  >
-                    {o.content}
-                  </ListItemText>
-                )}
-                {!o.userIsSender && (
-                  <Box sx={styles.actionItems}>
-                    {o.attachment && (
+      <Header leftContent={<ActionButtons />} />
+      <Box sx={styles.mainContainer}>
+        <Avatar width="400px" height="800px" />
+        {messages.length > 0 ? (
+          <List sx={styles.chatList} component="div" ref={chatContainerRef}>
+            {messages.map((o) => {
+              return (
+                <ListItem component="div" key={o.id}>
+                  {o.error ? (
+                    <Alert
+                      severity="warning"
+                      sx={styles.error}
+                      variant="outlined"
+                    >
+                      {o.content}
+                    </Alert>
+                  ) : (
+                    <ListItemText
+                      primaryTypographyProps={{
+                        sx: o.userIsSender
+                          ? styles.userMessageText
+                          : styles.botMessageText,
+                      }}
+                      sx={
+                        o.userIsSender ? styles.userMessage : styles.botMessage
+                      }
+                    >
+                      {o.content}
+                    </ListItemText>
+                  )}
+                  {!o.userIsSender && (
+                    <Box sx={styles.actionItems}>
+                      {o.attachment && (
+                        <IconButton
+                          onClick={() => {
+                            setDialogOpen(true);
+                            setSelectedMessage(o);
+                          }}
+                          sx={styles.actionButton}
+                        >
+                          <OpenInNewIcon />
+                        </IconButton>
+                      )}
                       <IconButton
                         onClick={() => {
-                          setDialogOpen(true);
-                          setSelectedMessage(o);
+                          if (speakingMessageId !== o.id) {
+                            readMessage(o);
+                          }
                         }}
                         sx={styles.actionButton}
                       >
-                        <OpenInNewIcon />
+                        <VolumeUpIcon />
                       </IconButton>
-                    )}
-                    <IconButton
-                      onClick={() => {
-                        if (speakingMessageId !== o.id) {
-                          readMessage(o);
-                        }
-                      }}
-                      sx={styles.actionButton}
-                    >
-                      <VolumeUpIcon />
-                    </IconButton>
-                  </Box>
-                )}
-              </ListItem>
-            );
-          })}
-        </List>
-      ) : (
-        <Box sx={styles.noMessagesPrompt}>
-          <Typography variant="h5">Ask me something!</Typography>
-          <Typography variant="subtitle2">
-            I'd be happy to assist you with what you need! Start a conversation
-            using the microphone or keyboard button!
-          </Typography>
-        </Box>
-      )}
+                    </Box>
+                  )}
+                </ListItem>
+              );
+            })}
+          </List>
+        ) : (
+          <Box sx={styles.noMessagesPrompt}>
+            <Typography variant="h5">Ask me something!</Typography>
+            <Typography variant="subtitle2">
+              I'd be happy to assist you with what you need! Start a
+              conversation using the microphone or keyboard button!
+            </Typography>
+          </Box>
+        )}
+      </Box>
+
       <Snackbar
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
         autoHideDuration={5000}
@@ -281,6 +280,7 @@ const ResponsePage = () => {
           Sorry, looks like there's a network error. Please try again later!
         </Alert>
       </Snackbar>
+
       {selectedMessage && (
         <Dialog
           open={dialogOpen}
@@ -306,6 +306,7 @@ const ResponsePage = () => {
           </DialogContent>
         </Dialog>
       )}
+
       {keyboardActive ? <VirtualKeyboard /> : null}
     </Box>
   );
