@@ -12,12 +12,15 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import Header from "../components/Header";
-import { useAppSelector } from "../state/hooks";
+import { useAppDispatch, useAppSelector } from "../state/hooks";
 import { Message } from "../state/slices/messagesSlice";
 import VirtualKeyboard from "../components/VirtualKeyboard";
 import Typography from "@mui/material/Typography";
 import Avatar from "../components/Avatar";
 import { Box } from "../components/Box";
+import Alert from "@mui/material/Alert";
+import Snackbar from "@mui/material/Snackbar";
+import { closeSnackbar } from "../state/slices/snackbarSlice";
 
 const styles = {
   // TODO: Fix theming
@@ -50,6 +53,11 @@ const styles = {
     justifyContent: "space-between",
     alignItems: "center",
   },
+  error: {
+    border: 2,
+    borderColor: "secondary.main",
+    fontSize: "1rem",
+  },
   noMessagesPrompt: {
     display: "flex",
     flexDirection: "column",
@@ -75,7 +83,7 @@ const styles = {
 };
 
 const ResponsePage = () => {
-  const [open, setOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [speakingMessageId, setSpeakingMessageId] = useState<number | null>(
@@ -84,8 +92,11 @@ const ResponsePage = () => {
 
   const { keyboardActive } = useAppSelector((state) => state.actionButtons);
   const { messages } = useAppSelector((state) => state.messages);
+  const { snackbarOpen } = useAppSelector((state) => state.snackbar);
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
+
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if ("speechSynthesis" in window) {
@@ -115,7 +126,7 @@ const ResponsePage = () => {
       readMessage(latestMessage);
       if (latestMessage.attachment) {
         timeoutId = setTimeout(() => {
-          setOpen(true);
+          setDialogOpen(true);
         }, 1000);
       }
     }
@@ -126,11 +137,6 @@ const ResponsePage = () => {
 
     return () => clearTimeout(timeoutId);
   }, [messages, voices.length]);
-
-  const handleDialogClose = () => {
-    setOpen(false);
-    setSelectedMessage(null);
-  };
 
   const readMessage = (message: Message) => {
     if ("speechSynthesis" in window) {
@@ -177,6 +183,16 @@ const ResponsePage = () => {
     }
   };
 
+  const onSnackbarClose = (
+    _?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    dispatch(closeSnackbar());
+  };
+
   return (
     <Box sx={styles.root}>
       <Header
@@ -197,22 +213,32 @@ const ResponsePage = () => {
           {messages.map((o) => {
             return (
               <ListItem component="div" key={o.id}>
-                <ListItemText
-                  primaryTypographyProps={{
-                    sx: o.userIsSender
-                      ? styles.userMessageText
-                      : styles.botMessageText,
-                  }}
-                  sx={o.userIsSender ? styles.userMessage : styles.botMessage}
-                >
-                  {o.content}
-                </ListItemText>
+                {o.error ? (
+                  <Alert
+                    severity="warning"
+                    sx={styles.error}
+                    variant="outlined"
+                  >
+                    {o.content}
+                  </Alert>
+                ) : (
+                  <ListItemText
+                    primaryTypographyProps={{
+                      sx: o.userIsSender
+                        ? styles.userMessageText
+                        : styles.botMessageText,
+                    }}
+                    sx={o.userIsSender ? styles.userMessage : styles.botMessage}
+                  >
+                    {o.content}
+                  </ListItemText>
+                )}
                 {!o.userIsSender && (
                   <Box sx={styles.actionItems}>
                     {o.attachment && (
                       <IconButton
                         onClick={() => {
-                          setOpen(true);
+                          setDialogOpen(true);
                           setSelectedMessage(o);
                         }}
                         sx={styles.actionButton}
@@ -245,12 +271,31 @@ const ResponsePage = () => {
           </Typography>
         </Box>
       )}
+      <Snackbar
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        autoHideDuration={5000}
+        onClose={onSnackbarClose}
+        open={snackbarOpen}
+      >
+        <Alert severity="error" onClose={onSnackbarClose}>
+          Sorry, looks like there's a network error. Please try again later!
+        </Alert>
+      </Snackbar>
       {selectedMessage && (
-        <Dialog open={open} onClose={handleDialogClose}>
+        <Dialog
+          open={dialogOpen}
+          onClose={() => {
+            setDialogOpen(false);
+            setSelectedMessage(null);
+          }}
+        >
           <DialogTitle sx={styles.dialogTitle}>
             <Box>Attachment</Box>
             <IconButton
-              onClick={handleDialogClose}
+              onClick={() => {
+                setDialogOpen(false);
+                setSelectedMessage(null);
+              }}
               sx={styles.dialogIconButton}
             >
               <CloseIcon />

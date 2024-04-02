@@ -11,7 +11,7 @@ const initialState: actionButtonState = {
 };
 
 export const actionButtonSlice = createSlice({
-  name: "actionbuttons",
+  name: "actionButtons",
   initialState,
   reducers: {
     setKeyboardActive: (state, action: PayloadAction<boolean>) => {

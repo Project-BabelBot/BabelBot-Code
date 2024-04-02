@@ -5,6 +5,7 @@ from django.db.models import Q
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework import status
 
 from .forms import FlightSearchForm
 from .models import Flight
@@ -32,6 +33,16 @@ from keras.optimizers import SGD
 from deep_translator import GoogleTranslator
 
 import speech_recognition as sr
+
+ERROR_MESSAGES = [
+  "Sorry, I didn't quite get that. Could you please try again?",
+  "There was an issue processing your request. Please try again!",
+  "I'm sorry, I didn't quite understand, can you please repeat that?",
+  "Oops! Something went wrong. Please feel free to try again!",
+  "I couldn't quite hear you, can you please repeat that?",
+  "Sorry, it was a bit hard to hear you, could you please try again?",
+  "Sorry, I didn't catch what you said, can you please repeat that?",
+]
 
 
 @api_view(["GET"])
@@ -125,33 +136,34 @@ def main(request):
 
     Requirements:
         - Django REST Framework
-        - Your custom modules (e.g., load_intents, capture_and_recognize, lang_detect, etc.)
+        - Your custom modules (e.g., load_intents, lang_detect, etc.)
         - External dependencies for language processing (e.g., nltk, tensorflow)
 
     Returns:
         HttpResponse: A response indicating the outcome of the chatbot interaction.
     """
-    intents = load_intents()
-
-    r = sr.Recognizer()
-    
-    input_audio = request.data['file']
-    input_audio = input_audio.read()
-
-    with sr.AudioFile(BytesIO(input_audio)) as source:
-            audio = r.record(source)
-
-    text_en = r.recognize_google(audio, language="en-US")
-    text_fr = r.recognize_google(audio, language="fr-FR")
-    text_es = r.recognize_google(audio, language="es-AR")
-    
-    # Detect possible languages from the captured audio
-    possible_langs = lang_detect(text_en, text_fr, text_es)
-    lang_list, prob_list = lang_prob(possible_langs)
-    lang_ISO = ISO_639(lang_list, prob_list)
-    lang_map = {"en": text_en, "es": text_es, "fr": text_fr}
-
     try:
+        intents = load_intents()
+
+        r = sr.Recognizer()
+        
+        input_audio = request.data['file']
+        input_audio = input_audio.read()
+
+        with sr.AudioFile(BytesIO(input_audio)) as source:
+                audio = r.record(source)
+
+        text_en = r.recognize_google(audio, language="en-US")
+        text_fr = r.recognize_google(audio, language="fr-FR")
+        text_es = r.recognize_google(audio, language="es-AR")
+        
+        # Detect possible languages from the captured audio
+        possible_langs = lang_detect(text_en, text_fr, text_es)
+        lang_list, prob_list = lang_prob(possible_langs)
+        lang_ISO = ISO_639(lang_list, prob_list)
+        lang_map = {"en": text_en, "es": text_es, "fr": text_fr}
+
+        
         if lang_ISO in lang_map:
             message = lang_map[lang_ISO]
             message_time = datetime.now()
@@ -161,7 +173,7 @@ def main(request):
                 "timestamp": message_time,
                 "userIsSender": True,
             }
-           
+            
             # Translate the message to English
             translator_lang2en = GoogleTranslator(source = "auto", target = "en")
             lang2en = translator_lang2en.translate(message)
@@ -185,36 +197,72 @@ def main(request):
             }
             
             return Response(response_data)
+        
+        else:
+            raise AssertionError("Language not supported")
+
+        
+    except sr.UnknownValueError as e:
+        print(type(e))
+        print(e)
+        error_response = {
+            "content": random.choice(ERROR_MESSAGES),
+            "error": True,
+            "language": "en",
+            "timestamp": datetime.now(),
+            "userIsSender": False
+        }
+        return Response(error_response, status=status.HTTP_400_BAD_REQUEST)
             
-    except ValueError as e:
-        print(f"Error: {e}")
-        return HttpResponse("Could not understand audio. Please press the button again to try again!")
+    except Exception as e:
+        print(type(e))
+        print(e)
+        error_response = {
+            "content": random.choice(ERROR_MESSAGES),
+            "error": True,
+            "language": "en",
+            "timestamp": datetime.now(),
+            "userIsSender": False
+        }
+        return Response(error_response, status=status.HTTP_400_BAD_REQUEST)
     
 @api_view(["POST"])
 def text_nlp(request):
-    input_text = request.data["textInput"]
+    try:
+        input_text = request.data["textInput"]
 
-    lang_ISO = "en"
-    intents = load_intents()
+        lang_ISO = "en"
+        intents = load_intents()
 
-    translator_lang2en = GoogleTranslator(source = "auto", target = "en")
-    lang2en = translator_lang2en.translate(input_text)
+        translator_lang2en = GoogleTranslator(source = "auto", target = "en")
+        lang2en = translator_lang2en.translate(input_text)
 
-    ints = predict_class(lang2en)
-    res = get_response(ints, intents)
+        ints = predict_class(lang2en)
+        res = get_response(ints, intents)
 
-    # Translate the response back to the original language
-    translator_en2lang = GoogleTranslator(source = "auto", target = lang_ISO)
-    res_en2lang = translator_en2lang.translate(res)
+        # Translate the response back to the original language
+        translator_en2lang = GoogleTranslator(source = "auto", target = lang_ISO)
+        res_en2lang = translator_en2lang.translate(res)
 
-    botResponse = {
-        "content": res_en2lang,
-        "language": lang_ISO,
-        "timestamp": datetime.now(),
-        "userIsSender": False
-    } 
+        botResponse = {
+            "content": res_en2lang,
+            "language": lang_ISO,
+            "timestamp": datetime.now(),
+            "userIsSender": False
+        } 
+        
+        return Response(botResponse)
     
-    return Response(botResponse)
+    except Exception as e:
+        print(e)
+        error_response = {
+            "content": random.choice(ERROR_MESSAGES),
+            "error": True,
+            "language": "en",
+            "timestamp": datetime.now(),
+            "userIsSender": False
+        }
+        return Response(error_response, status=status.HTTP_400_BAD_REQUEST)
 
 
 def flight_search(request):

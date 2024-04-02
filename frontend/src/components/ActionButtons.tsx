@@ -9,11 +9,12 @@ import {
   setMicActive,
 } from "../state/slices/actionButtonSlice";
 import { useAppDispatch, useAppSelector } from "../state/hooks";
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef } from "react";
 import { appendMessage } from "../state/slices/messagesSlice";
 import { Box } from "./Box";
+import { openSnackbar } from "../state/slices/snackbarSlice";
 
 const styles = {
   activeButton: {
@@ -89,14 +90,20 @@ const ActionButtons = () => {
           const { botResponse } = res.data;
           dispatch(appendMessage(userQuery));
           dispatch(appendMessage(botResponse));
-          navigate("/response");
         } catch (error) {
-          console.log("API ERROR");
+          if (isAxiosError(error)) {
+            if (error.response) {
+              dispatch(appendMessage(error.response.data));
+            } else {
+              dispatch(openSnackbar());
+            }
+          }
         }
       };
 
       mediaRecorderRef.current.stop();
       mediaRecorderRef.current = null;
+      navigate("/response");
     }
   };
 
