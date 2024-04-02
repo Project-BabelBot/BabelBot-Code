@@ -59,6 +59,11 @@ const styles = {
     borderColor: "secondary.main",
     fontSize: "1rem",
   },
+  loader: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   mainContainer: {
     display: "flex",
     flexDirection: "row",
@@ -259,7 +264,11 @@ const ResponsePage = () => {
                 </ListItem>
               );
             })}
-            {loading && <CircularProgress />}
+            {loading && (
+              <Box sx={styles.loader}>
+                <CircularProgress />
+              </Box>
+            )}
           </List>
         ) : (
           <Box sx={styles.noMessagesPrompt}>
