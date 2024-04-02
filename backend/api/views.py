@@ -163,7 +163,6 @@ def main(request):
         lang_ISO = ISO_639(lang_list, prob_list)
         lang_map = {"en": text_en, "es": text_es, "fr": text_fr}
 
-        
         if lang_ISO in lang_map:
             message = lang_map[lang_ISO]
             message_time = datetime.now()
@@ -200,7 +199,6 @@ def main(request):
         
         else:
             raise AssertionError("Language not supported")
-
         
     except sr.UnknownValueError as e:
         print(type(e))
