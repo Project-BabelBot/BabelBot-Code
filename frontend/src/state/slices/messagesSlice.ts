@@ -12,10 +12,12 @@ export type Message = {
 
 type messagesState = {
   messages: Message[];
+  loading: boolean;
 };
 
 const initialState: messagesState = {
   messages: [],
+  loading: false,
 };
 
 export const messagesSlice = createSlice({
@@ -30,11 +32,11 @@ export const messagesSlice = createSlice({
       const newMessage = { id: newMessageId, ...action.payload };
       state.messages.push(newMessage);
     },
-    setMessages: (state, action: PayloadAction<Message[]>) => {
-      state.messages = action.payload;
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
     },
   },
 });
 
-export const { appendMessage, setMessages } = messagesSlice.actions;
+export const { appendMessage, setLoading } = messagesSlice.actions;
 export default messagesSlice.reducer;

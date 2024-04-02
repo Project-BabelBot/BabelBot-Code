@@ -21,6 +21,7 @@ import { Box } from "../components/Box";
 import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
 import { closeSnackbar } from "../state/slices/snackbarSlice";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const styles = {
   // TODO: Fix theming
@@ -96,7 +97,7 @@ const ResponsePage = () => {
   );
 
   const { keyboardActive } = useAppSelector((state) => state.actionButtons);
-  const { messages } = useAppSelector((state) => state.messages);
+  const { loading, messages } = useAppSelector((state) => state.messages);
   const { snackbarOpen } = useAppSelector((state) => state.snackbar);
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
@@ -203,7 +204,7 @@ const ResponsePage = () => {
       <Header leftContent={<ActionButtons />} />
       <Box sx={styles.mainContainer}>
         <Avatar width="400px" height="800px" />
-        {messages.length > 0 ? (
+        {messages.length > 0 || loading ? (
           <List sx={styles.chatList} component="div" ref={chatContainerRef}>
             {messages.map((o) => {
               return (
@@ -258,6 +259,7 @@ const ResponsePage = () => {
                 </ListItem>
               );
             })}
+            {loading && <CircularProgress />}
           </List>
         ) : (
           <Box sx={styles.noMessagesPrompt}>

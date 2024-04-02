@@ -10,9 +10,9 @@ import {
 } from "../state/slices/actionButtonSlice";
 import { useAppDispatch, useAppSelector } from "../state/hooks";
 import axios, { isAxiosError } from "axios";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useRef } from "react";
-import { appendMessage } from "../state/slices/messagesSlice";
+import { appendMessage, setLoading } from "../state/slices/messagesSlice";
 import { Box } from "./Box";
 import { openSnackbar } from "../state/slices/snackbarSlice";
 
@@ -42,6 +42,7 @@ const ActionButtons = () => {
   );
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   const startRecording = async (): Promise<void> => {
     audioChunksRef.current = [];
@@ -78,6 +79,11 @@ const ActionButtons = () => {
         });
         formData.append("file", audioFile, "recording.wav");
 
+        dispatch(setLoading(true));
+        if (location.pathname !== "/response") {
+          navigate("/response");
+        }
+
         try {
           // Send request and await response
           const res = await axios.post("http://localhost:8000/api/", formData, {
@@ -87,10 +93,11 @@ const ActionButtons = () => {
           });
           const { userQuery } = res.data;
           const { botResponse } = res.data;
+          dispatch(setLoading(false));
           dispatch(appendMessage(userQuery));
           dispatch(appendMessage(botResponse));
-          navigate("/response");
         } catch (error) {
+          dispatch(setLoading(false));
           if (isAxiosError(error)) {
             if (error.response) {
               dispatch(appendMessage(error.response.data));
@@ -98,7 +105,6 @@ const ActionButtons = () => {
               dispatch(openSnackbar());
             }
           }
-          navigate("/response");
         }
       };
 

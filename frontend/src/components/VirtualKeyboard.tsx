@@ -4,9 +4,9 @@ import Keyboard, { KeyboardReactInterface } from "react-simple-keyboard";
 import "react-simple-keyboard/build/css/index.css";
 import { useAppDispatch } from "../state/hooks";
 import { setKeyboardActive } from "../state/slices/actionButtonSlice";
-import { appendMessage } from "../state/slices/messagesSlice";
+import { appendMessage, setLoading } from "../state/slices/messagesSlice";
 import axios, { isAxiosError } from "axios";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Box } from "./Box";
 
 type VirtualKeyboardProps = {
@@ -21,6 +21,7 @@ const VirtualKeyboard = ({ onEnter }: VirtualKeyboardProps) => {
   const keyboardRef = useRef<KeyboardReactInterface | null>(null);
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   const onChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -61,6 +62,12 @@ const VirtualKeyboard = ({ onEnter }: VirtualKeyboardProps) => {
     dispatch(setKeyboardActive(false));
     const formData = new FormData();
     formData.append("textInput", input);
+
+    dispatch(setLoading(true));
+    if (location.pathname !== "/response") {
+      navigate("/response");
+    }
+
     try {
       const res = await axios.post(
         "http://localhost:8000/api/text-nlp/",
@@ -71,9 +78,10 @@ const VirtualKeyboard = ({ onEnter }: VirtualKeyboardProps) => {
           },
         }
       );
+      dispatch(setLoading(false));
       dispatch(appendMessage(res.data));
-      navigate("/response");
     } catch (error) {
+      dispatch(setLoading(false));
       if (isAxiosError(error)) {
         if (error.response) {
           dispatch(appendMessage(error.response.data));
@@ -89,7 +97,6 @@ const VirtualKeyboard = ({ onEnter }: VirtualKeyboardProps) => {
           dispatch(appendMessage(errorMessage));
         }
       }
-      navigate("/response");
     }
   };
 
