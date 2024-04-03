@@ -60,9 +60,10 @@ const styles = {
     fontSize: "1rem",
   },
   loader: {
+    alignItems: "center",
     display: "flex",
     justifyContent: "center",
-    alignItems: "center",
+    padding: 2.5,
   },
   mainContainer: {
     display: "flex",
@@ -141,13 +142,16 @@ const ResponsePage = () => {
         }, 1000);
       }
     }
+
+    return () => clearTimeout(timeoutId);
+  }, [messages, voices.length]);
+
+  useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop =
         chatContainerRef.current.scrollHeight;
     }
-
-    return () => clearTimeout(timeoutId);
-  }, [messages, voices.length]);
+  }, [messages, loading]);
 
   const readMessage = (message: Message) => {
     if ("speechSynthesis" in window) {
@@ -213,7 +217,15 @@ const ResponsePage = () => {
           <List sx={styles.chatList} component="div" ref={chatContainerRef}>
             {messages.map((o) => {
               return (
-                <ListItem component="div" key={o.id}>
+                <ListItem
+                  component="div"
+                  key={o.id}
+                  sx={
+                    o.id === messages.length - 1
+                      ? { paddingBottom: 2.5 }
+                      : undefined
+                  }
+                >
                   {o.error ? (
                     <Alert
                       severity="warning"

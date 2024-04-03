@@ -22,6 +22,7 @@ const styles = {
     height: "75px",
     width: "75px",
   },
+  icon: { fontSize: "50px" },
   inactiveButton: {
     backgroundColor: "primary.light",
     height: "75px",
@@ -161,9 +162,9 @@ const ActionButtons = () => {
         sx={micActive ? styles.activeButton : styles.inactiveButton}
       >
         {micActive ? (
-          <MicIcon fontSize="large" />
+          <MicIcon sx={styles.icon} />
         ) : (
-          <MicOffIcon fontSize="large" />
+          <MicOffIcon sx={styles.icon} />
         )}
       </IconButton>
       <IconButton
@@ -171,9 +172,9 @@ const ActionButtons = () => {
         sx={keyboardActive ? styles.activeButton : styles.inactiveButton}
       >
         {keyboardActive ? (
-          <KeyboardHideIcon fontSize="large" />
+          <KeyboardHideIcon sx={styles.icon} />
         ) : (
-          <KeyboardIcon fontSize="large" />
+          <KeyboardIcon sx={styles.icon} />
         )}
       </IconButton>
     </Box>
