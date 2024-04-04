@@ -1,4 +1,6 @@
 import { Avatar as ReadyPlayerMeAvatar } from "@readyplayerme/visage";
+import { useEffect, useState } from "react";
+import { useAppSelector } from "../state/hooks";
 
 type AvatarProps = {
   cameraInitialDistance?: number;
@@ -14,8 +16,17 @@ const Avatar = ({
   width,
 }: AvatarProps) => {
   const modelSrc = "https://models.readyplayer.me/6529c84847d203826af5808d.glb";
-  const animationSrc = "./basic-wave.fbx";
-  // const poseSrc = "./avatar-pose-listen.glb";
+  const [animationSrc, setAnimationSrc] = useState<string>("./basic-wave.fbx");
+
+  const { micActive } = useAppSelector((state) => state.actionButtons);
+
+  useEffect(() => {
+    if (micActive) {
+      setAnimationSrc("./avatar-pose-listen.glb");
+    } else {
+      setAnimationSrc("./basic-wave.fbx");
+    }
+  }, [micActive]);
 
   return (
     <ReadyPlayerMeAvatar
@@ -60,7 +71,6 @@ const Avatar = ({
       keyLightColor="#FFFFFF"
       keyLightIntensity={1.2}
       modelSrc={modelSrc}
-      // poseSrc={poseSrc}
       scale={1}
       style={{ width: width, height: height }}
     />
