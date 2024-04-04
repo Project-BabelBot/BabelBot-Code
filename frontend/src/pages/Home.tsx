@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import Header from "../components/Header";
 import ActionButtons from "../components/ActionButtons";
 import VirtualKeyboard from "../components/VirtualKeyboard";
@@ -25,13 +26,22 @@ const styles = {
 };
 
 const Home = () => {
-  const { keyboardActive } = useAppSelector((state) => state.actionButtons);
+  const { keyboardActive, micActive } = useAppSelector((state) => state.actionButtons);
+  const [animationSrc, setAnimationSrc] = useState<string>("./basic-wave.fbx")
+
+  useEffect(() => {
+    if (micActive) {
+      setAnimationSrc("./avatar-pose-listen.glb");
+    } else {
+      setAnimationSrc("./basic-wave.fbx");
+    }
+  }, [micActive]);
 
   return (
     <Box sx={styles.root}>
       <Header leftContent={<ActionButtons />} />
       <Box sx={styles.avatarContainer}>
-        <Avatar height="700px" width="700px" />
+        <Avatar animationSrc={animationSrc} height="700px" width="700px" />
       </Box>
       {keyboardActive ? <VirtualKeyboard /> : null}
     </Box>

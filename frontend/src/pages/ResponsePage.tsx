@@ -102,9 +102,11 @@ const ResponsePage = () => {
     null
   );
 
-  const { keyboardActive } = useAppSelector((state) => state.actionButtons);
+  const { keyboardActive, micActive } = useAppSelector((state) => state.actionButtons);
   const { loading, messages } = useAppSelector((state) => state.messages);
   const { snackbarOpen } = useAppSelector((state) => state.snackbar);
+
+  const [animationSrc, setAnimationSrc] = useState<string>("./basic-wave.fbx");
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
@@ -152,6 +154,15 @@ const ResponsePage = () => {
         chatContainerRef.current.scrollHeight;
     }
   }, [messages, loading]);
+
+  useEffect(() => {
+    if (micActive) {
+      setAnimationSrc("./avatar-pose-listen.glb");
+      // setAnimationSrc("./response-pointing.glb");
+    } else {
+      setAnimationSrc("./basic-wave.fbx");
+    }
+  }, [micActive]);
 
   const readMessage = (message: Message) => {
     if ("speechSynthesis" in window) {
@@ -212,7 +223,7 @@ const ResponsePage = () => {
     <Box sx={styles.root}>
       <Header leftContent={<ActionButtons />} />
       <Box sx={styles.mainContainer}>
-        <Avatar width="400px" height="800px" />
+        <Avatar animationSrc={animationSrc} width="400px" height="800px" />
         {messages.length > 0 || loading ? (
           <List sx={styles.chatList} component="div" ref={chatContainerRef}>
             {messages.map((o) => {

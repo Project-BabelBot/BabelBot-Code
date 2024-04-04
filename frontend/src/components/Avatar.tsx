@@ -5,6 +5,7 @@ type AvatarProps = {
   cameraTarget?: number;
   height?: string;
   width?: string;
+  animationSrc?: string;
 };
 
 const Avatar = ({
@@ -12,9 +13,10 @@ const Avatar = ({
   cameraTarget,
   height,
   width,
+  animationSrc,
 }: AvatarProps) => {
   const modelSrc = "https://models.readyplayer.me/6529c84847d203826af5808d.glb";
-  const animationSrc = "./basic-wave.fbx";
+  // const animationSrc = "./basic-wave.fbx";
   // const poseSrc = "./avatar-pose-listen.glb";
 
   return (
